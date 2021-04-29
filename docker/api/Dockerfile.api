@@ -1,8 +1,4 @@
 FROM golang:1.16.3-alpine
+ENV GOCACHE=/usr/local/go/src/coach/.cache/go-build
 RUN apk update \
     && apk add git
-
-RUN echo 'root:root' |chpasswd
-RUN adduser -S nao \
-    && echo "nao ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers \
-    && echo "nao:nao" | chpasswd

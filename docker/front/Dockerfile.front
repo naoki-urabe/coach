@@ -1,3 +1,4 @@
 FROM node:16.0.0-alpine
+ENV HOME=/usr/local/coach
 WORKDIR /usr/local/coach
 RUN apk update

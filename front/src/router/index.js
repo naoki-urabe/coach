@@ -1,11 +1,11 @@
 import { createWebHistory, createRouter } from "vue-router";
-import HelloWorld from "../components/HelloWorld";
+import Kuji from "../components/Kuji";
 import Register from "../components/Register";
 
 const routes = [
     {
-        path: "/hello",
-        component: HelloWorld,
+        path: "/kuji",
+        component: Kuji,
     },
     {
         path: "/register",

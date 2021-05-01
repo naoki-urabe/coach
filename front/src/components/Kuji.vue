@@ -1,18 +1,25 @@
 <template>
-  <h1>{{ count }}</h1>
+  <h1>{{ subject }}</h1>
   <button @click="kuji">くじびき</button>
 </template>
 
 <script>
 export default {
   data() {
-    return { count: 0 };
+    return {
+      subject: "",
+    };
   },
   methods: {
-    kuji: function () {
-        this.axios.get("http://localhost:8080/").then(function (response) {
-          console.log(response);
+    kuji: async function () {
+      let subject = ""
+      await this.axios
+        .get("http://localhost:8080/api/subject/random")
+        .then(function (response) {
+          subject = response.data.subject;
         });
+      this.subject = subject
+      console.log(subject)
     },
   },
 };

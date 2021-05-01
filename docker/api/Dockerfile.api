@@ -1,4 +1,7 @@
 FROM golang:1.16.3-alpine
 ENV GOCACHE=/usr/local/go/src/coach/.cache/go-build
+ENV GOBIN=/usr/local/go/bin
+ENV GO111MODULE=on
+ENV CGO_ENABLED=0
 RUN apk update \
     && apk add git

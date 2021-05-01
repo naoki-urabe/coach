@@ -1,18 +1,32 @@
 package controllers
 
 import (
+	"coach/models"
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 )
 
-func hello(w http.ResponseWriter, r *http.Request) {
+func addSubject(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	if r.Method == "OPTIONS" {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+	if (*r).Method == "OPTIONS" {
 		return
 	}
-	fmt.Println("hello")
+	var subject models.Subject = models.Subject{"test", "test"}
+	models.InsertSubject(&subject)
+}
+
+func getAllSubject(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	var subjects []models.Subject
+	models.GetAllSubject(&subjects)
+	responseBody, err := json.Marshal(subjects)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
 }
 
 func enableCors(w *http.ResponseWriter) {
@@ -24,7 +38,8 @@ func enableCors(w *http.ResponseWriter) {
 
 func StartWebServer() error {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/", hello).Methods("GET")
+	router.HandleFunc("/api/subject", addSubject).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/subject", getAllSubject).Methods("GET")
 	fmt.Println("Listen 8080...")
 	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), router)
 }

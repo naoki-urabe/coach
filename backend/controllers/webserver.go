@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
@@ -14,8 +15,17 @@ func addSubject(w http.ResponseWriter, r *http.Request) {
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-	var subject models.Subject = models.Subject{"test", "test"}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	var subject models.Subject
+	if err := json.Unmarshal(reqBody, &subject); err != nil {
+		log.Fatal(err)
+	}
 	models.InsertSubject(&subject)
+	responseBody, err := json.Marshal(subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
 }
 
 func getAllSubject(w http.ResponseWriter, r *http.Request) {

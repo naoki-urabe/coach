@@ -1,15 +1,12 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <Kuji />
+  <router-view/>
 </template>
 
 <script>
-import Kuji from './components/Kuji.vue'
 
 export default {
   name: 'App',
   components: {
-    Kuji
   }
 }
 </script>

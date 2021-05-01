@@ -8,3 +8,6 @@ run-front-container:
 	docker run -it -u "1000:1000" -v /etc/group:/etc/group:ro -v /etc/passwd:/etc/passwd:ro -v $(PWD)/front:/usr/local/coach -p 3000:3000 -w /usr/local/coach coach-front:latest /bin/sh
 run-container:
 	docker run -it -v $(PWD):/coach -p 3000:3000 -w /coach coach:latest
+
+run-mysql:
+	docker run --name mysql -e MYSQL_ROOT_PASSWORD=fg47gh62 -p 3306:3306 -d mysql:8.0

@@ -9,9 +9,10 @@ import (
 	"log"
 	"net/http"
 	"math/rand"
+	"coach/auth"
 )
 
-func addSubject(w http.ResponseWriter, r *http.Request) {
+var addSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {
 		return
@@ -27,9 +28,9 @@ func addSubject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	w.Write(responseBody)
-}
+})
 
-func getAllSubject(w http.ResponseWriter, r *http.Request) {
+var getAllSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	var subjects []models.Subject
 	models.GetAllSubject(&subjects)
@@ -38,9 +39,9 @@ func getAllSubject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	w.Write(responseBody)
-}
+})
 
-func getRandomSubject(w http.ResponseWriter, r *http.Request) {
+var getRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	var subjects []models.Subject
 	models.GetAllSubject(&subjects)
@@ -52,7 +53,7 @@ func getRandomSubject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	w.Write(responseBody)
-}
+})
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
@@ -63,9 +64,10 @@ func enableCors(w *http.ResponseWriter) {
 
 func StartWebServer() error {
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/api/subject", addSubject).Methods("POST", "OPTIONS")
-	router.HandleFunc("/api/subject", getAllSubject).Methods("GET")
-	router.HandleFunc("/api/subject/random", getRandomSubject).Methods("GET")
+	router.Handle("/api/subject", auth.JwtMiddleware.Handler(addSubject)).Methods("POST", "OPTIONS")
+	router.Handle("/api/subject", auth.JwtMiddleware.Handler(getAllSubject)).Methods("GET")
+	router.Handle("/api/subject/random", auth.JwtMiddleware.Handler(getRandomSubject)).Methods("GET")
+	router.HandleFunc("/auth", auth.GetTokenHandler)
 	fmt.Println("Listen 8080...")
 	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), router)
 }

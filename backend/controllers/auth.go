@@ -1,4 +1,4 @@
-package auth
+package controllers
 
 import (
 	"coach/models"
@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-func GetTokenHandler(privateKey *rsa.PrivateKey) string {
+func getTokenHandler(privateKey *rsa.PrivateKey) string {
 	token := jwt.New(jwt.SigningMethodRS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["admin"] = true
@@ -44,7 +44,7 @@ func exportPEMStrToPrivateKey(privateKeyPem string) *rsa.PrivateKey {
 	return key
 }
 
-func ExportPrivateKeyAsPEMStr(privateKey *rsa.PrivateKey) string {
+func exportPrivateKeyAsPEMStr(privateKey *rsa.PrivateKey) string {
 	privateKeyPem := string(pem.EncodeToMemory(
 		&pem.Block{
 			Type:  "RSA PRIVATE KEY",
@@ -54,7 +54,7 @@ func ExportPrivateKeyAsPEMStr(privateKey *rsa.PrivateKey) string {
 	return privateKeyPem
 }
 
-func ExportPublicKeyAsPEMStr(publicKey *rsa.PublicKey) string {
+func exportPublicKeyAsPEMStr(publicKey *rsa.PublicKey) string {
 	publicKeyPem := string(pem.EncodeToMemory(
 		&pem.Block{
 			Type:  "RSA PUBLIC KEY",
@@ -64,7 +64,7 @@ func ExportPublicKeyAsPEMStr(publicKey *rsa.PublicKey) string {
 	return publicKeyPem
 }
 
-func ValidateJWTMiddleware(next http.Handler) http.Handler {
+func validateJWTMiddleware(next http.Handler) http.Handler {
 	publicKey := exportPEMStrToPublicKey(os.Getenv("PUBLICKEY"))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		enableCors(&w)
@@ -89,7 +89,7 @@ func ValidateJWTMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+func login(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {
 		return
@@ -109,13 +109,6 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	os.Setenv("PUBLICKEY", publicKey)
-	token := GetTokenHandler(privateKey)
+	token := getTokenHandler(privateKey)
 	w.Write([]byte(token))
-}
-
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-	(*w).Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-	(*w).Header().Set("Content-Type", "application/json")
 }

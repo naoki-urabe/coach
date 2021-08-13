@@ -1,12 +1,28 @@
 <template>
-  <v-data-table :headers="headers" :items="studyLogs" :items-per-page="5">
-  </v-data-table>
+  <div>
+    <v-container>
+      <v-row>
+        <v-col cols="5">
+        <v-select v-model="subject" :items="subjects"></v-select>
+        </v-col>
+        <v-col cols="5">
+          <v-text-field v-model="content"></v-text-field>
+        </v-col>
+        <v-btn @click="submit">submit</v-btn>
+      </v-row>
+    </v-container>
+    <v-data-table :headers="headers" :items="studyLogs" :items-per-page="5">
+    </v-data-table>
+  </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      subject: "",
+      subjects: ["network", "db"],
+      content: "",
       headers: [
         { text: "科目名", value: "subject" },
         { text: "内容", value: "content" },
@@ -38,6 +54,13 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    submit() {
+      console.log(this.subject)
+      console.log(this.content);
+      this.content = "";
+    },
   },
 };
 </script>

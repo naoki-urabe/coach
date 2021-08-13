@@ -5,16 +5,13 @@ import (
 	"coach/models"
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/x509"
 	"encoding/json"
-	"encoding/pem"
 	"fmt"
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	mrand "math/rand"
 	"net/http"
-	"os"
 )
 
 var addSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -67,26 +64,6 @@ func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Content-Type", "application/json")
 }
 
-func exportPrivateKeyAsPEMStr(privateKey *rsa.PrivateKey) string {
-	privateKeyPem := string(pem.EncodeToMemory(
-		&pem.Block{
-			Type:  "RSA PRIVATE KEY",
-			Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
-		},
-	))
-	return privateKeyPem
-}
-
-func exportPublicKeyAsPEMStr(publicKey *rsa.PublicKey) string {
-	publicKeyPem := string(pem.EncodeToMemory(
-		&pem.Block{
-			Type:  "RSA PUBLIC KEY",
-			Bytes: x509.MarshalPKCS1PublicKey(publicKey),
-		},
-	))
-	return publicKeyPem
-}
-
 func registerUser(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {
@@ -102,8 +79,8 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	}
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	publicKey := &privateKey.PublicKey
-	privateKeyPemStr := exportPrivateKeyAsPEMStr(privateKey)
-	publicKeyPemStr := exportPublicKeyAsPEMStr(publicKey)
+	privateKeyPemStr := auth.ExportPrivateKeyAsPEMStr(privateKey)
+	publicKeyPemStr := auth.ExportPublicKeyAsPEMStr(publicKey)
 	user.PrivateKey = privateKeyPemStr
 	user.PublicKey = publicKeyPemStr
 	models.InsertUser(&user)
@@ -112,36 +89,6 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	w.Write(responseBody)
-}
-
-func exportPEMStrToPrivateKey(privateKeyPem string) *rsa.PrivateKey {
-	block, _ := pem.Decode([]byte(privateKeyPem))
-	key, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
-	return key
-}
-
-func login(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var user models.User
-	if err := json.Unmarshal(reqBody, &user); err != nil {
-		log.Fatal(err)
-	}
-	models.FindUser(&user)
-	privateKey := exportPEMStrToPrivateKey(user.PrivateKey)
-	publicKey := user.PublicKey
-	if user.PrivateKey == "" {
-		log.Fatal(err)
-	}
-	os.Setenv("PUBLICKEY", publicKey)
-	token := auth.GetTokenHandler(privateKey)
-	w.Write([]byte(token))
 }
 
 func StartWebServer() error {
@@ -154,7 +101,7 @@ func StartWebServer() error {
 	// router.HandleFunc("/auth", auth.GetTokenHandler)
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")
 	// router.HandleFunc("/api/auth/user", auth.GetTokenHandler).Methods("GET", "OPTIONS")
-	router.HandleFunc("/api/auth/login", login).Methods("POST", "OPTIONS")
+	router.HandleFunc("/api/auth/login", auth.Login).Methods("POST", "OPTIONS")
 	fmt.Println("Listen 8080...")
 	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), router)
 }

@@ -1,11 +1,14 @@
 package auth
 
 import (
+	"coach/models"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	jwt "github.com/golang-jwt/jwt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -35,6 +38,32 @@ func exportPEMStrToPublicKey(publicKeyPem string) *rsa.PublicKey {
 	return key
 }
 
+func exportPEMStrToPrivateKey(privateKeyPem string) *rsa.PrivateKey {
+	block, _ := pem.Decode([]byte(privateKeyPem))
+	key, _ := x509.ParsePKCS1PrivateKey(block.Bytes)
+	return key
+}
+
+func ExportPrivateKeyAsPEMStr(privateKey *rsa.PrivateKey) string {
+	privateKeyPem := string(pem.EncodeToMemory(
+		&pem.Block{
+			Type:  "RSA PRIVATE KEY",
+			Bytes: x509.MarshalPKCS1PrivateKey(privateKey),
+		},
+	))
+	return privateKeyPem
+}
+
+func ExportPublicKeyAsPEMStr(publicKey *rsa.PublicKey) string {
+	publicKeyPem := string(pem.EncodeToMemory(
+		&pem.Block{
+			Type:  "RSA PUBLIC KEY",
+			Bytes: x509.MarshalPKCS1PublicKey(publicKey),
+		},
+	))
+	return publicKeyPem
+}
+
 func ValidateJWTMiddleware(next http.Handler) http.Handler {
 	publicKey := exportPEMStrToPublicKey(os.Getenv("PUBLICKEY"))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +87,30 @@ func ValidateJWTMiddleware(next http.Handler) http.Handler {
 			log.Fatal(err)
 		}
 	})
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var user models.User
+	if err := json.Unmarshal(reqBody, &user); err != nil {
+		log.Fatal(err)
+	}
+	models.FindUser(&user)
+	privateKey := exportPEMStrToPrivateKey(user.PrivateKey)
+	publicKey := user.PublicKey
+	if user.PrivateKey == "" {
+		log.Fatal(err)
+	}
+	os.Setenv("PUBLICKEY", publicKey)
+	token := GetTokenHandler(privateKey)
+	w.Write([]byte(token))
 }
 
 func enableCors(w *http.ResponseWriter) {

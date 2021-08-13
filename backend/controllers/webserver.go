@@ -10,52 +10,8 @@ import (
 	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
-	mrand "math/rand"
 	"net/http"
 )
-
-var addSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
-	if (*r).Method == "OPTIONS" {
-		return
-	}
-	reqBody, err := ioutil.ReadAll(r.Body)
-	var subject models.Subject
-	if err := json.Unmarshal(reqBody, &subject); err != nil {
-		log.Fatal(err)
-	}
-	models.InsertSubject(&subject)
-	responseBody, err := json.Marshal(subject)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w.Write(responseBody)
-})
-
-var getAllSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
-	var subjects []models.Subject
-	models.GetAllSubject(&subjects)
-	responseBody, err := json.Marshal(subjects)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w.Write(responseBody)
-})
-
-var getRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
-	var subjects []models.Subject
-	models.GetAllSubject(&subjects)
-	n := len(subjects)
-	i := mrand.Intn(n - 1)
-	selectedSubject := subjects[i]
-	responseBody, err := json.Marshal(selectedSubject)
-	if err != nil {
-		log.Fatal(err)
-	}
-	w.Write(responseBody)
-})
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
@@ -94,9 +50,9 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 func StartWebServer() error {
 	router := mux.NewRouter().StrictSlash(true)
 	subjectRouter := router.PathPrefix("/api/subject").Subrouter()
-	subjectRouter.HandleFunc("/", addSubject).Methods("POST", "OPTIONS")
-	subjectRouter.HandleFunc("/", getAllSubject).Methods("GET")
-	subjectRouter.HandleFunc("/random", getRandomSubject).Methods("GET", "OPTIONS")
+	subjectRouter.HandleFunc("/", AddSubject).Methods("POST", "OPTIONS")
+	subjectRouter.HandleFunc("/", GetAllSubject).Methods("GET")
+	subjectRouter.HandleFunc("/random", GetRandomSubject).Methods("GET", "OPTIONS")
 	subjectRouter.Use(auth.ValidateJWTMiddleware)
 	// router.HandleFunc("/auth", auth.GetTokenHandler)
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")

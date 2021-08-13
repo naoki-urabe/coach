@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-var AddSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var addSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {
 		return
@@ -27,7 +27,7 @@ var AddSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Write(responseBody)
 })
 
-var GetAllSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var getAllSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	var subjects []models.Subject
 	models.GetAllSubject(&subjects)
@@ -38,7 +38,7 @@ var GetAllSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	w.Write(responseBody)
 })
 
-var GetRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var getRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	var subjects []models.Subject
 	models.GetAllSubject(&subjects)

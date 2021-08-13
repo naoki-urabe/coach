@@ -6,13 +6,24 @@ services:
         dockerfile: ./docker/api/Dockerfile.api
     tty: true
     volumes:
-    - ./backend:/usr/local/go/src/coach
+    - .:/app
     depends_on:
       - mysql
     ports:
       - 8080:8080
     stdin_open: true
     env_file: .env
+  front:
+    build: 
+        context: .
+        dockerfile: ./docker/front/Dockerfile.front
+    tty: true
+    volumes:
+    - .:/app
+    depends_on:
+      - backend
+    ports:
+      - 3000:3000
   mysql:
     image: mysql:5.7
     restart: always

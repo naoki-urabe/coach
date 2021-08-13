@@ -1,3 +1,10 @@
 <template>
-<v-btn @click="$auth.logout()">logout</v-btn>
+  <RecordTime />
 </template>
+
+<script>
+import RecordTime from "../components/RecordTime";
+export default {
+  components: { RecordTime },
+};
+</script>

@@ -3,3 +3,4 @@ backend/db/mysql_data/
 .env
 .env.dev.db
 backend/config.ini
+front/.vscode-server

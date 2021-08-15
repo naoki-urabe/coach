@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
+	"coach/models"
 )
 
 func StartWebServer() error {
+	models.ConnectDb()
 	router := mux.NewRouter().StrictSlash(true)
 	subjectRouter := router.PathPrefix("/api/subject").Subrouter()
 	subjectRouter.HandleFunc("/", addSubject).Methods("POST", "OPTIONS")

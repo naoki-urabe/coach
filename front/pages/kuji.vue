@@ -1,6 +1,6 @@
 <template>
   <div>
-  <h1>{{ subject }}</h1>
+  <h1>{{ subjectName }}</h1>
   <button @click="kuji">くじびき</button>
   </div>
 </template>
@@ -10,12 +10,12 @@ import axios from "axios";
 export default {
   data() {
     return {
-      subject: "",
+      subjectName: "",
     };
   },
   methods: {
     kuji: async function () {
-      let subject = ""
+      let subjectName = ""
       let token = this.$auth.strategy.token.get()
       console.log(token);
       await axios
@@ -25,10 +25,10 @@ export default {
           }
         })
         .then(function (response) {
-          subject = response.data.subject;
+          subjectName = response.data.subject_name;
         });
-      this.subject = subject
-      console.log(subject)
+      this.subjectName = subjectName
+      console.log(subjectName)
     },
   },
 };

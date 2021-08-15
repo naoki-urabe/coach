@@ -43,7 +43,7 @@ var getRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	var subjects []models.Subject
 	models.GetAllSubject(&subjects)
 	n := len(subjects)
-	i := mrand.Intn(n - 1)
+	i := mrand.Intn(n)
 	selectedSubject := subjects[i]
 	responseBody, err := json.Marshal(selectedSubject)
 	if err != nil {

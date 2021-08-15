@@ -2,7 +2,7 @@ package models
 
 type Subject struct {
 	SubjectCode string `db:"subject_code" json:"subject_code"`
-	Subject     string `db:"subject_name" json:"subject_name"`
+	SubjectName     string `db:"subject_name" json:"subject_name"`
 }
 
 var getAllSubjectQuery = `

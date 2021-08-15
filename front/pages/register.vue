@@ -27,7 +27,7 @@ export default {
         url: "http://localhost:8080/api/auth/register",
         data: {
           id: this.id,
-          password: this.password,
+          pw: this.password,
         },
       }).then((data)=>{
         console.log(data);

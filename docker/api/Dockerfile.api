@@ -4,5 +4,7 @@ ENV GOBIN=/usr/local/go/bin
 ENV GO111MODULE=on
 ENV CGO_ENABLED=0
 RUN apk update\
-    && apk add --no-cache --update git
+    && apk add --no-cache --update git curl
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz \
+    && mv ./migrate.linux-amd64 /usr/bin/migrate
 WORKDIR /app

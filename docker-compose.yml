@@ -1,12 +1,12 @@
 version: '3.7'
 services:
   backend:
-    build: 
-        context: .
-        dockerfile: ./docker/api/Dockerfile.api
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile.api
     tty: true
     volumes:
-    - .:/app
+      - .:/app
     depends_on:
       - mysql
     ports:
@@ -14,12 +14,12 @@ services:
     stdin_open: true
     env_file: .env
   front:
-    build: 
-        context: .
-        dockerfile: ./docker/front/Dockerfile.front
+    build:
+      context: .
+      dockerfile: ./docker/front/Dockerfile.front
     tty: true
     volumes:
-    - .:/app
+      - .:/app
     depends_on:
       - backend
     ports:

@@ -100,6 +100,10 @@ export default {
           icon: 'mdi-chart-bubble',
           title: 'Inspire',
           to: '/inspire'
+        },
+        {
+          title: '科目登録',
+          to: '/registerSubject'
         }
       ],
       miniVariant: false,

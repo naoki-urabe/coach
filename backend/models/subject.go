@@ -10,12 +10,12 @@ SELECT * FROM subjects;
 `
 
 var insertSubjectQuery = `
-INSERT INTO subjects VALUES (?, ?);`
+INSERT INTO subjects VALUES(?, ?);`
 
 func GetAllSubject(subject *[]Subject) {
 	Db.Select(subject, getAllSubjectQuery)
 }
 
 func InsertSubject(subject *Subject) {
-	Db.MustExec(insertSubjectQuery)
+	Db.MustExec(insertSubjectQuery, subject.SubjectCode, subject.SubjectName)
 }

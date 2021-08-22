@@ -8,7 +8,7 @@
           <v-text-field v-model="password" label="PASSWORD"></v-text-field>
           <v-btn @click="login">submit</v-btn>
         </v-col>
-        <v-btn href="http://localhost:3001/registerUser">新規ユーザ登録</v-btn>
+        <v-btn href="http://localhost:3001/register-user">新規ユーザ登録</v-btn>
       </v-container>
     </center>
   </v-form>

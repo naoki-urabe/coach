@@ -1,10 +1,10 @@
 <template>
-  <RecordTime />
+  <RecordLog />
 </template>
 
 <script>
-import RecordTime from "../components/RecordTime";
+import RecordLog from "../components/RecordLog";
 export default {
-  components: { RecordTime },
+  components: { RecordLog },
 };
 </script>

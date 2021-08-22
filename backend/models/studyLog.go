@@ -13,13 +13,17 @@ var addStudyFinishLogQuery = `
 UPDATE study_logs SET comment = ?,study_finish_time = ? WHERE id = ?;
 `
 
-/*type StudyLog struct {
-	Id int `db:"id" json:"id"`
-	SubjectCode string `db:"subject_code" json:"subject_code"`
-	Comment string `db:"comment" json:`
-	StudyStartTime time.Time `db:"study_start_time" json:"study_start_time"`
+var getAllStudyLogQuery = `
+SELECT * FROM study_logs;
+`
+
+type StudyLog struct {
+	Id              int       `db:"id" json:"id"`
+	SubjectCode     string    `db:"subject_code" json:"subject_code"`
+	Comment         string    `db:"comment" json:"comment"`
+	StudyStartTime  time.Time `db:"study_start_time" json:"study_start_time"`
 	StudyFinishTime time.Time `db:"study_finish_time" json:"study_finish_time"`
-}*/
+}
 
 type StartLog struct {
 	Id             int       `db:"id" json:"id"`
@@ -41,4 +45,8 @@ func AddStudyStartLog(startLog *StartLog) int {
 
 func AddStudyFinishLog(finishLog *FinishLog) {
 	Db.MustExec(addStudyFinishLogQuery, finishLog.Comment, finishLog.StudyFinishTime, finishLog.Id)
+}
+
+func GetAllStudyLog(studyLog *[]StudyLog) {
+	Db.Select(studyLog, getAllStudyLogQuery)
 }

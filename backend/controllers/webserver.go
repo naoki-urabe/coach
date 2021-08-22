@@ -18,6 +18,7 @@ func StartWebServer() error {
 	studyLogRouter := router.PathPrefix("/api/study-log").Subrouter()
 	studyLogRouter.HandleFunc("/start", addStudyStartLog)
 	studyLogRouter.HandleFunc("/finish", addStudyFinishLog)
+	studyLogRouter.HandleFunc("/all", getAllStudyLog)
 	studyLogRouter.Use(validateJWTMiddleware)
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")
 	// router.HandleFunc("/api/auth/user", GetTokenHandler).Methods("GET", "OPTIONS")

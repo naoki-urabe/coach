@@ -45,3 +45,17 @@ var addStudyFinishLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 	}
 	w.Write(responseBody)
 })
+
+var getAllStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	var studyLogs []models.StudyLog
+	models.GetAllStudyLog(&studyLogs)
+	responseBody, err := json.Marshal(studyLogs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})

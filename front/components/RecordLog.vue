@@ -32,34 +32,12 @@ export default {
       finishTime: null,
       headers: [
         { text: "科目名", value: "subject" },
-        { text: "内容", value: "content" },
+        { text: "内容", value: "comment" },
         { text: "開始時刻", value: "start" },
         { text: "終了時刻", value: "end" },
         { text: "勉強時間", value: "time" },
       ],
-      studyLogs: [
-        {
-          subject: "network",
-          content: "TCP/IP 1-12p",
-          start: 1,
-          end: 2,
-          time: 3,
-        },
-        {
-          subject: "データベース",
-          content: "DB 1-12p",
-          start: 4,
-          end: 5,
-          time: 5,
-        },
-        {
-          subject: "Docker",
-          content: "docker 1-12p",
-          start: 6,
-          end: 7,
-          time: 8,
-        },
-      ],
+      studyLogs: [],
     };
   },
   computed: {
@@ -110,6 +88,29 @@ export default {
         this.updateCurrentRecord(token, currentId);
       }
     },
-  }
+    setStudyLogs: async function (studyLogs) {
+      for(let i=0;i<studyLogs.length;i++){
+        let log = studyLogs[i];
+        this.studyLogs.push({
+          subject: log.subject_code,
+          comment: log.comment,
+          start: log.study_start_time,
+          end: log.study_finish_time,
+          time: null,
+        },)
+      }
+    }
+  },
+  mounted: async function() {
+    let token = this.$auth.strategy.token.get();
+    const response = await axios.get(
+      "http://localhost:8080/api/study-log/all",
+      {
+        headers: { Authorization: token },
+      }
+    );
+    this.setStudyLogs(response.data)
+    console.log(response);
+  },
 };
 </script>

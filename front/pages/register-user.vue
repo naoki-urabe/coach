@@ -29,8 +29,6 @@ export default {
           id: this.id,
           pw: this.password,
         },
-      }).then((data)=>{
-        console.log(data);
       });
     },
   },

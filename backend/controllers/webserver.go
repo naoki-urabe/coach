@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"coach/models"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
-	"coach/models"
 )
 
 func StartWebServer() error {
@@ -15,6 +15,10 @@ func StartWebServer() error {
 	subjectRouter.HandleFunc("", getAllSubject).Methods("GET")
 	subjectRouter.HandleFunc("/random", getRandomSubject).Methods("GET", "OPTIONS")
 	subjectRouter.Use(validateJWTMiddleware)
+	studyLogRouter := router.PathPrefix("/api/study-log").Subrouter()
+	studyLogRouter.HandleFunc("/start", addStudyStartLog)
+	studyLogRouter.HandleFunc("/finish", addStudyFinishLog)
+	studyLogRouter.Use(validateJWTMiddleware)
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")
 	// router.HandleFunc("/api/auth/user", GetTokenHandler).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/auth/login", login).Methods("POST", "OPTIONS")

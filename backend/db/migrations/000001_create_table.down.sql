@@ -1,2 +1,3 @@
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS subjects;
+DROP TABLE IF EXISTS study_logs;

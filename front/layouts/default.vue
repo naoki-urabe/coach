@@ -103,7 +103,7 @@ export default {
         },
         {
           title: '科目登録',
-          to: '/registerSubject'
+          to: '/register-subject'
         }
       ],
       miniVariant: false,

@@ -17,6 +17,9 @@ var getAllStudyLogQuery = `
 SELECT * FROM study_logs;
 `
 
+var getLatestStudyLogQuery = `
+SELECT * FROM study_logs WHERE id = ?;`
+
 type StudyLog struct {
 	Id              int       `db:"id" json:"id"`
 	SubjectCode     string    `db:"subject_code" json:"subject_code"`
@@ -49,4 +52,8 @@ func AddStudyFinishLog(finishLog *FinishLog) {
 
 func GetAllStudyLog(studyLog *[]StudyLog) {
 	Db.Select(studyLog, getAllStudyLogQuery)
+}
+
+func GetLatestStudyLog(studyLog *StudyLog, id int) {
+	Db.Get(studyLog, getLatestStudyLogQuery, id)
 }

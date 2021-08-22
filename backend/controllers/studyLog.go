@@ -39,7 +39,9 @@ var addStudyFinishLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 		log.Fatal(err)
 	}
 	models.AddStudyFinishLog(&finishLog)
-	responseBody, err := json.Marshal(finishLog)
+	var latestStudyLog models.StudyLog
+	models.GetLatestStudyLog(&latestStudyLog, finishLog.Id)
+	responseBody, err := json.Marshal(latestStudyLog)
 	if err != nil {
 		log.Fatal(err)
 	}

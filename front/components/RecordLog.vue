@@ -15,7 +15,7 @@
         <v-btn @click="recordTime">submit</v-btn>
       </v-row>
     </v-container>
-    <v-data-table :headers="headers" :items="studyLogs" :items-per-page="5">
+    <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20">
     </v-data-table>
   </div>
 </template>
@@ -61,6 +61,7 @@ export default {
       this.$store.commit("studyLog/isStartStateChange");
       this.$store.commit("studyLog/changeCurrentId", response.data.id);
       this.subjectCode = "";
+      return response;
     },
     updateCurrentRecord: async function (token, currentId) {
       const bodyParameters = {
@@ -78,18 +79,38 @@ export default {
       this.$store.commit("studyLog/isStartStateChange");
       this.$store.commit("studyLog/changeCurrentId", response.data.id);
       this.comment = "";
+      return response;
     },
     recordTime: async function () {
       let token = this.$auth.strategy.token.get();
       const currentId = this.$store.getters["studyLog/getId"];
+      let response = null;
       if (currentId === -1) {
-        this.createRecord(token);
+        response = await this.createRecord(token);
+        const latestStudyLog = response.data;
+        this.addLatestStudyLog(latestStudyLog);
       } else {
-        this.updateCurrentRecord(token, currentId);
+        response = await this.updateCurrentRecord(token, currentId);
+        const latestStudyLog = response.data;
+        this.updateLatestStudyLog(latestStudyLog);
       }
     },
+    addLatestStudyLog: async function (latestStudyLog) {
+      console.log(latestStudyLog);
+      this.studyLogs.push({
+        subject: latestStudyLog.subject_code,
+        comment: null,
+        start: latestStudyLog.study_start_time,
+        end: null,
+        time: null,
+      });
+    },
+    updateLatestStudyLog: function (latestStudyLog) {
+      this.$set(this.studyLogs[latestStudyLog.id-1], 'comment', latestStudyLog.comment);
+      this.$set(this.studyLogs[latestStudyLog.id-1], 'end', latestStudyLog.study_finish_time);
+    },
     setStudyLogs: async function (studyLogs) {
-      for(let i=0;i<studyLogs.length;i++){
+      for (let i = 0; i < studyLogs.length; i++) {
         let log = studyLogs[i];
         this.studyLogs.push({
           subject: log.subject_code,
@@ -97,19 +118,23 @@ export default {
           start: log.study_start_time,
           end: log.study_finish_time,
           time: null,
-        },)
+        });
       }
-    }
+    },
+    getAllStudyLogs: async function (token) {
+      const allStudyLogs = await axios.get(
+        "http://localhost:8080/api/study-log/all",
+        {
+          headers: { Authorization: token },
+        }
+      );
+      return allStudyLogs.data;
+    },
   },
-  mounted: async function() {
+  mounted: async function () {
     let token = this.$auth.strategy.token.get();
-    const response = await axios.get(
-      "http://localhost:8080/api/study-log/all",
-      {
-        headers: { Authorization: token },
-      }
-    );
-    this.setStudyLogs(response.data)
+    const response = await this.getAllStudyLogs(token);
+    this.setStudyLogs(response);
     console.log(response);
   },
 };

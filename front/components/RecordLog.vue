@@ -4,7 +4,7 @@
       <v-row>
         <div v-if="!this.$store.state.studyLog.isStart">
           <v-col cols="5">
-            <v-select v-model="subjectCode" :items="subjects"></v-select>
+            <v-select v-model="subjectCode" :items="subjects" item-text="subject_name" item-value="subject_code"></v-select>
           </v-col>
         </div>
         <div v-if="this.$store.state.studyLog.isStart">
@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       subjectCode: "",
-      subjects: ["network", "db"],
+      subjects: [],
       comment: "",
       startTime: null,
       finishTime: null,
@@ -106,8 +106,16 @@ export default {
       });
     },
     updateLatestStudyLog: function (latestStudyLog) {
-      this.$set(this.studyLogs[latestStudyLog.id-1], 'comment', latestStudyLog.comment);
-      this.$set(this.studyLogs[latestStudyLog.id-1], 'end', latestStudyLog.study_finish_time);
+      this.$set(
+        this.studyLogs[latestStudyLog.id - 1],
+        "comment",
+        latestStudyLog.comment
+      );
+      this.$set(
+        this.studyLogs[latestStudyLog.id - 1],
+        "end",
+        latestStudyLog.study_finish_time
+      );
     },
     setStudyLogs: async function (studyLogs) {
       for (let i = 0; i < studyLogs.length; i++) {
@@ -130,12 +138,19 @@ export default {
       );
       return allStudyLogs.data;
     },
+    getAllSubjects: async function (token) {
+      const allSubjects = await axios.get("http://localhost:8080/api/subject", {
+        headers: { Authorization: token },
+      });
+      return allSubjects.data;
+    },
   },
   mounted: async function () {
     let token = this.$auth.strategy.token.get();
     const response = await this.getAllStudyLogs(token);
+    this.subjects = await this.getAllSubjects(token);
     this.setStudyLogs(response);
-    console.log(response);
+    this.subjects.splice(0,0);
   },
 };
 </script>

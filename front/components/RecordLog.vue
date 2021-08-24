@@ -2,17 +2,23 @@
   <div>
     <v-container>
       <v-row>
-        <div v-if="!this.$store.state.studyLog.isStart">
-          <v-col cols="5">
-            <v-select v-model="subjectCode" :items="subjects" item-text="subject_name" item-value="subject_code"></v-select>
-          </v-col>
-        </div>
-        <div v-if="this.$store.state.studyLog.isStart">
-          <v-col cols="5">
-            <v-text-field v-model="comment"></v-text-field>
-          </v-col>
-        </div>
-        <v-btn @click="recordTime">submit</v-btn>
+        <v-col cols="4" v-if="!this.$store.state.studyLog.isStart">
+          <v-select
+            v-model="subjectCode"
+            :items="subjects"
+            item-text="subject_name"
+            item-value="subject_code"
+          ></v-select>
+        </v-col>
+        <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
+          <v-text-field v-model="content"></v-text-field>
+        </v-col>
+        <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
+          <v-text-field v-model="comment"></v-text-field>
+        </v-col>
+        <v-col cols="4">
+          <v-btn @click="recordTime">submit</v-btn>
+        </v-col>
       </v-row>
     </v-container>
     <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20">
@@ -28,11 +34,13 @@ export default {
       subjectCode: "",
       subjects: [],
       comment: "",
+      content: "",
       startTime: null,
       finishTime: null,
       headers: [
         { text: "科目名", value: "subject" },
-        { text: "内容", value: "comment" },
+        { text: "内容", value: "content" },
+        { text: "感想", value: "comment" },
         { text: "開始時刻", value: "start" },
         { text: "終了時刻", value: "end" },
         { text: "勉強時間", value: "time" },
@@ -66,6 +74,7 @@ export default {
     updateCurrentRecord: async function (token, currentId) {
       const bodyParameters = {
         id: currentId,
+        content: this.content,
         comment: this.comment,
         study_finish_time: new Date(),
       };
@@ -78,6 +87,7 @@ export default {
       );
       this.$store.commit("studyLog/isStartStateChange");
       this.$store.commit("studyLog/changeCurrentId", response.data.id);
+      this.content = "";
       this.comment = "";
       return response;
     },
@@ -96,9 +106,9 @@ export default {
       }
     },
     addLatestStudyLog: async function (latestStudyLog) {
-      console.log(latestStudyLog);
       this.studyLogs.push({
         subject: latestStudyLog.subject_code,
+        content: null,
         comment: null,
         start: latestStudyLog.study_start_time,
         end: null,
@@ -106,6 +116,11 @@ export default {
       });
     },
     updateLatestStudyLog: function (latestStudyLog) {
+      this.$set(
+        this.studyLogs[latestStudyLog.id - 1],
+        "content",
+        latestStudyLog.content
+      );
       this.$set(
         this.studyLogs[latestStudyLog.id - 1],
         "comment",
@@ -122,6 +137,7 @@ export default {
         let log = studyLogs[i];
         this.studyLogs.push({
           subject: log.subject_code,
+          content: log.content,
           comment: log.comment,
           start: log.study_start_time,
           end: log.study_finish_time,
@@ -136,12 +152,18 @@ export default {
           headers: { Authorization: token },
         }
       );
+      if (allStudyLogs.data === null) {
+        return [];
+      }
       return allStudyLogs.data;
     },
     getAllSubjects: async function (token) {
       const allSubjects = await axios.get("http://localhost:8080/api/subject", {
         headers: { Authorization: token },
       });
+      if (allSubjects.data === null) {
+        return [];
+      }
       return allSubjects.data;
     },
   },
@@ -150,7 +172,6 @@ export default {
     const response = await this.getAllStudyLogs(token);
     this.subjects = await this.getAllSubjects(token);
     this.setStudyLogs(response);
-    this.subjects.splice(0,0);
   },
 };
 </script>

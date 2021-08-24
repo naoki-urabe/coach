@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS subjects(
 CREATE TABLE IF NOT EXISTS study_logs(
     id SERIAL PRIMARY KEY,
     subject_code VARCHAR(20) NOT NULL,
+    content VARCHAR(200),
     comment VARCHAR(200),
     study_start_time DATETIME NOT NULL,
     study_finish_time DATETIME

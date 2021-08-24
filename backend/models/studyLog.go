@@ -10,7 +10,7 @@ INSERT INTO study_logs (subject_code,study_start_time) VALUES(?,?);
 `
 
 var addStudyFinishLogQuery = `
-UPDATE study_logs SET comment = ?,study_finish_time = ? WHERE id = ?;
+UPDATE study_logs SET content = ?,comment = ?,study_finish_time = ? WHERE id = ?;
 `
 
 var getAllStudyLogQuery = `
@@ -23,6 +23,7 @@ SELECT * FROM study_logs WHERE id = ?;`
 type StudyLog struct {
 	Id              int       `db:"id" json:"id"`
 	SubjectCode     string    `db:"subject_code" json:"subject_code"`
+	Content         string    `db:"content" json:"content"`
 	Comment         string    `db:"comment" json:"comment"`
 	StudyStartTime  time.Time `db:"study_start_time" json:"study_start_time"`
 	StudyFinishTime time.Time `db:"study_finish_time" json:"study_finish_time"`
@@ -36,6 +37,7 @@ type StartLog struct {
 
 type FinishLog struct {
 	Id              int       `db:"id" json:"id"`
+	Content         string    `db:"content" json:"content"`
 	Comment         string    `db:"comment" json:"comment"`
 	StudyFinishTime time.Time `db:"study_finish_time" json:"study_finish_time"`
 }
@@ -47,7 +49,7 @@ func AddStudyStartLog(startLog *StartLog) int {
 }
 
 func AddStudyFinishLog(finishLog *FinishLog) {
-	Db.MustExec(addStudyFinishLogQuery, finishLog.Comment, finishLog.StudyFinishTime, finishLog.Id)
+	Db.MustExec(addStudyFinishLogQuery, finishLog.Content, finishLog.Comment, finishLog.StudyFinishTime, finishLog.Id)
 }
 
 func GetAllStudyLog(studyLog *[]StudyLog) {

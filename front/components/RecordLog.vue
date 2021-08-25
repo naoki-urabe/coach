@@ -28,6 +28,7 @@
 
 <script>
 import axios from "axios";
+import dayjs from "dayjs";
 export default {
   data() {
     return {
@@ -131,17 +132,24 @@ export default {
         "end",
         latestStudyLog.study_finish_time
       );
+      const end = dayjs(latestStudyLog.study_finish_time);
+      const start = dayjs(latestStudyLog.study_start_time);
+      const time = parseInt(end.diff(start) / 1000 / 60, 10);
+      this.$set(this.studyLogs[latestStudyLog.id - 1], "time", time);
     },
     setStudyLogs: async function (studyLogs) {
       for (let i = 0; i < studyLogs.length; i++) {
         let log = studyLogs[i];
+        const end = dayjs(log.study_finish_time);
+        const start = dayjs(log.study_start_time);
+        const time = parseInt(end.diff(start) / 1000 / 60, 10);
         this.studyLogs.push({
           subject: log.subject_code,
           content: log.content,
           comment: log.comment,
           start: log.study_start_time,
           end: log.study_finish_time,
-          time: null,
+          time: time,
         });
       }
     },

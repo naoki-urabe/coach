@@ -26,7 +26,6 @@ export default {
       try {
         const response = await this.$auth.loginWith('local', {data: {"Id": this.id, "Pw": this.password}});
         this.$auth.strategy.token.set(response.data)
-        console.log(this.$auth.strategy.token.get());
       } catch(error) {
         console.log(error)
       }

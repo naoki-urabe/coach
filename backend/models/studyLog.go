@@ -20,6 +20,27 @@ SELECT * FROM study_logs;
 var getLatestStudyLogQuery = `
 SELECT * FROM study_logs WHERE id = ?;`
 
+var getDailyStudyInvestmentQuery = `
+SELECT period,SUM(diff) AS diff
+    FROM 
+	    (SELECT CAST(study_start_time AS DATE) AS period,
+		TIMEDIFF(study_finish_time,study_start_time) AS diff 
+        FROM study_logs) 
+	AS t
+GROUP BY period;
+`
+
+var getWeeklyStudyInvestmentQuery = `
+SELECT period, SUM(diff) AS diff
+    FROM 
+        (SELECT 
+            CAST(SUBDATE(study_start_time, WEEKDAY(study_start_time)) as DATE) as period,
+            TIMEDIFF(study_finish_time,study_start_time) as diff 
+            From study_logs)
+        AS t
+GROUP BY period;
+`
+
 type StudyLog struct {
 	Id              int       `db:"id" json:"id"`
 	SubjectCode     string    `db:"subject_code" json:"subject_code"`
@@ -42,6 +63,11 @@ type FinishLog struct {
 	StudyFinishTime time.Time `db:"study_finish_time" json:"study_finish_time"`
 }
 
+type PeriodDiff struct {
+	Period string `db:"period" json:"period"`
+	Diff   string `db:"diff" json:"diff"`
+}
+
 func AddStudyStartLog(startLog *StartLog) int {
 	registerLog := Db.MustExec(addStudyStartLogQuery, startLog.SubjectCode, startLog.StudyStartTime)
 	id, _ := registerLog.LastInsertId()
@@ -58,4 +84,12 @@ func GetAllStudyLog(studyLog *[]StudyLog) {
 
 func GetLatestStudyLog(studyLog *StudyLog, id int) {
 	Db.Get(studyLog, getLatestStudyLogQuery, id)
+}
+
+func GetDailyStudyInvestment(periodDiff *[]PeriodDiff) {
+	Db.Select(periodDiff, getDailyStudyInvestmentQuery)
+}
+
+func GetWeeklyStudyInvestment(periodDiff *[]PeriodDiff) {
+	Db.Select(periodDiff, getWeeklyStudyInvestmentQuery)
 }

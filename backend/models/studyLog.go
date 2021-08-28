@@ -20,13 +20,24 @@ SELECT * FROM study_logs;
 var getLatestStudyLogQuery = `
 SELECT * FROM study_logs WHERE id = ?;`
 
-var getDailyStudyInvestment = `
+var getDailyStudyInvestmentQuery = `
 SELECT period,SUM(diff) AS diff
     FROM 
 	    (SELECT CAST(study_start_time AS DATE) AS period,
 		TIMEDIFF(study_finish_time,study_start_time) AS diff 
         FROM study_logs) 
 	AS t
+GROUP BY period;
+`
+
+var getWeeklyStudyInvestmentQuery = `
+SELECT period, SUM(diff) AS diff
+    FROM 
+        (SELECT 
+            CAST(SUBDATE(study_start_time, WEEKDAY(study_start_time)) as DATE) as period,
+            TIMEDIFF(study_finish_time,study_start_time) as diff 
+            From study_logs)
+        AS t
 GROUP BY period;
 `
 
@@ -76,5 +87,9 @@ func GetLatestStudyLog(studyLog *StudyLog, id int) {
 }
 
 func GetDailyStudyInvestment(periodDiff *[]PeriodDiff) {
-	Db.Select(periodDiff, getDailyStudyInvestment)
+	Db.Select(periodDiff, getDailyStudyInvestmentQuery)
+}
+
+func GetWeeklyStudyInvestment(periodDiff *[]PeriodDiff) {
+	Db.Select(periodDiff, getWeeklyStudyInvestmentQuery)
 }

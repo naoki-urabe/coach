@@ -75,3 +75,17 @@ var getDailyStudyInvestment = http.HandlerFunc(func(w http.ResponseWriter, r *ht
 	}
 	w.Write(responseBody)
 })
+
+var getWeeklyStudyInvestment = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	var periodDiff []models.PeriodDiff
+	models.GetWeeklyStudyInvestment(&periodDiff)
+	responseBody, err := json.Marshal(periodDiff)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})

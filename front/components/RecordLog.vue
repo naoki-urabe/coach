@@ -108,6 +108,7 @@ export default {
     },
     addLatestStudyLog: async function (latestStudyLog) {
       this.studyLogs.push({
+        id: latestStudyLog.id,
         subject: latestStudyLog.subject_code,
         content: null,
         comment: null,
@@ -116,26 +117,35 @@ export default {
         time: null,
       });
     },
+    findIdx: function (latestStudyLog) {
+      const id = latestStudyLog.id;
+      for (let i = 0; i < this.studyLogs.length; i++) {
+        if (id === this.studyLogs[i].id) {
+          return i;
+        }
+      }
+    },
     updateLatestStudyLog: function (latestStudyLog) {
+      const idx = this.findIdx(latestStudyLog);
       this.$set(
-        this.studyLogs[latestStudyLog.id - 1],
+        this.studyLogs[idx],
         "content",
         latestStudyLog.content
       );
       this.$set(
-        this.studyLogs[latestStudyLog.id - 1],
+        this.studyLogs[idx],
         "comment",
         latestStudyLog.comment
       );
       this.$set(
-        this.studyLogs[latestStudyLog.id - 1],
+        this.studyLogs[idx],
         "end",
         latestStudyLog.study_finish_time
       );
       const end = dayjs(latestStudyLog.study_finish_time);
       const start = dayjs(latestStudyLog.study_start_time);
       const time = parseInt(end.diff(start) / 1000 / 60, 10);
-      this.$set(this.studyLogs[latestStudyLog.id - 1], "time", time);
+      this.$set(this.studyLogs[idx], "time", time);
     },
     setStudyLogs: async function (studyLogs) {
       for (let i = 0; i < studyLogs.length; i++) {
@@ -144,6 +154,7 @@ export default {
         const start = dayjs(log.study_start_time);
         const time = parseInt(end.diff(start) / 1000 / 60, 10);
         this.studyLogs.push({
+          id: log.id,
           subject: log.subject_code,
           content: log.content,
           comment: log.comment,

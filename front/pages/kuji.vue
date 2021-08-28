@@ -17,7 +17,6 @@ export default {
     kuji: async function () {
       let subjectName = ""
       let token = this.$auth.strategy.token.get()
-      console.log(token);
       await axios
         .get("http://localhost:8080/api/subject/random", {
           headers: {
@@ -28,7 +27,6 @@ export default {
           subjectName = response.data.subject_name;
         });
       this.subjectName = subjectName
-      console.log(subjectName)
     },
   },
 };

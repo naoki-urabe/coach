@@ -19,7 +19,6 @@ export default {
   methods: {
     registerSubject: async function () {
       let token = this.$auth.strategy.token.get();
-      console.log(token);
       const headers = {
         Authorization: token,
       };

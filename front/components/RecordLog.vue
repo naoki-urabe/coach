@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import dayjs from "dayjs";
 export default {
   data() {
@@ -60,8 +59,8 @@ export default {
         subject_code: this.subjectCode,
         study_start_time: new Date(),
       };
-      const response = await axios.post(
-        "http://localhost:8080/api/study-log/start",
+      const response = await this.$axios.post(
+        "/study-log/start",
         bodyParameters,
         {
           headers: { Authorization: token },
@@ -79,8 +78,8 @@ export default {
         comment: this.comment,
         study_finish_time: new Date(),
       };
-      const response = await axios.post(
-        "http://localhost:8080/api/study-log/finish",
+      const response = await this.$axios.post(
+        "/study-log/finish",
         bodyParameters,
         {
           headers: { Authorization: token },
@@ -165,8 +164,8 @@ export default {
       }
     },
     getAllStudyLogs: async function (token) {
-      const allStudyLogs = await axios.get(
-        "http://localhost:8080/api/study-log/all",
+      const allStudyLogs = await this.$axios.get(
+        "/study-log/all",
         {
           headers: { Authorization: token },
         }
@@ -177,7 +176,7 @@ export default {
       return allStudyLogs.data;
     },
     getAllSubjects: async function (token) {
-      const allSubjects = await axios.get("http://localhost:8080/api/subject", {
+      const allSubjects = await this.$axios.get("/subject", {
         headers: { Authorization: token },
       });
       if (allSubjects.data === null) {

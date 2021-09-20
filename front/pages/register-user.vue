@@ -11,7 +11,6 @@
   </center>
 </template>
 <script>
-import axios from "axios";
 export default {
   auth: "guest",
   data() {
@@ -22,9 +21,9 @@ export default {
   },
   methods: {
     register: async function () {
-      await axios({
+      await this.$axios({
         method: "post",
-        url: "http://localhost:8080/api/auth/register",
+        url: "/auth/register",
         data: {
           id: this.id,
           pw: this.password,

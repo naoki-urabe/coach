@@ -8,7 +8,6 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
@@ -26,7 +25,7 @@ export default {
         subject_code: this.subjectCode,
         subject_name: this.subjectName,
       };
-      await axios.post("http://localhost:8080/api/subject", bodyParameters, {
+      await this.$axios.post("/subject", bodyParameters, {
         headers: { Authorization: token },
       });
       this.subjectCode = "";

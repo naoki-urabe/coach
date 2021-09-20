@@ -6,7 +6,6 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
@@ -17,8 +16,8 @@ export default {
     kuji: async function () {
       let subjectName = ""
       let token = this.$auth.strategy.token.get()
-      await axios
-        .get("http://localhost:8080/api/subject/random", {
+      await this.$axios
+        .get("/subject/random", {
           headers: {
             Authorization: token,
           }

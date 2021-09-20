@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"coach/models"
+	"coach/config"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
@@ -25,6 +26,6 @@ func StartWebServer() error {
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")
 	// router.HandleFunc("/api/auth/user", GetTokenHandler).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/auth/login", login).Methods("POST", "OPTIONS")
-	fmt.Println("Listen 8080...")
-	return http.ListenAndServe(fmt.Sprintf(":%d", 8080), router)
+	fmt.Printf("Listen %s...", config.Config.ApiPort)
+	return http.ListenAndServe(fmt.Sprintf(":%s", config.Config.ApiPort), router)
 }

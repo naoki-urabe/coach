@@ -6,6 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"log"
+	"time"
 )
 
 var Db *sqlx.DB
@@ -20,6 +21,7 @@ func ConnectDb() {
 		config.Config.DbPort,
 		config.Config.DbName,
 	)
+	time.Sleep(30 * time.Second)
 	Db, err = sqlx.Connect("mysql", dbConnectInfo)
 	if err != nil {
 		log.Fatalln(err)

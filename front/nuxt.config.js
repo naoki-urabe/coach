@@ -1,17 +1,21 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from "vuetify/es5/util/colors";
 
 export default {
   auth: {
     redirect: {
-      login: '/login',
-      logout: '/login',
+      login: "/login",
+      logout: "/login",
       callback: false,
-      home: '/',
+      home: "/"
     },
     strategies: {
       local: {
         endpoints: {
-          login: {url: '/api/auth/login', method: 'post', propertyName: 'token'},
+          login: {
+            url: "/auth/login",
+            method: "post",
+            propertyName: "token"
+          },
           logout: false,
           user: false
           // user: {url: '/api/auth/user', method: 'get', propertyName: 'user'}
@@ -20,36 +24,32 @@ export default {
     }
   },
   axios: {
-    baseURL: 'http://localhost:8080',
+    baseURL: `http://${process.env.HOST}:${process.env.API_PORT}/api`
   },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - front',
-    title: 'front',
+    titleTemplate: "%s - front",
+    title: "front",
     htmlAttrs: {
-      lang: 'en'
+      lang: "en"
     },
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { hid: "description", name: "description", content: "" },
+      { name: "format-detection", content: "telephone=no" }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-    ]
+    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-  ],
+  css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-  ],
+  plugins: [],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -57,18 +57,15 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
+    "@nuxtjs/vuetify"
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    '@nuxtjs/axios',
-    '@nuxtjs/auth-next'
-  ],
+  modules: ["@nuxtjs/axios", "@nuxtjs/auth-next"],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ["~/assets/variables.scss"],
     theme: {
       dark: true,
       themes: {
@@ -86,9 +83,18 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-  },
+  build: {},
   router: {
-    middleware: ['auth']
+    middleware: ["auth"]
+  },
+  publicRuntimeConfig: {
+    host: process.env.HOST,
+    apiPort: process.env.API_PORT,
+    frontPort: parseInt(process.env.FRONT_PORT) + 1
+  },
+  privateRuntimeConfig: {},
+  server: {
+    port: process.env.FRONT_PORT,
+    host: process.env.HOST
   }
-}
+};

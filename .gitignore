@@ -1,6 +1,9 @@
 .cache/
 backend/db/mysql_data/
-.env
+.env.dev.api
+.env.dev.front
 .env.dev.db
-backend/config.ini
+.env.prod.api
+.env.prod.front
+.env.prod.db
 front/.vscode-server

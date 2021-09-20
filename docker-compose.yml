@@ -7,12 +7,10 @@ services:
     tty: true
     volumes:
       - .:/app
-    depends_on:
-      - mysql
     ports:
-      - 8080:8080
+      - 59822:59822
     stdin_open: true
-    env_file: .env
+    env_file: .env.dev.api
   front:
     build:
       context: .
@@ -23,12 +21,13 @@ services:
     depends_on:
       - backend
     ports:
-      - 3000:3000
-  mysql:
-    image: mysql:5.7
+      - 55824:55824
+    env_file: .env.dev.front
+  coach_db_dev:
+    image: mysql:8.0.26
     restart: always
     ports:
-      - 3306:3306
+      - 50284:50284
     volumes:
       - ./backend/db/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./backend/db/mysql_data:/var/lib/mysql

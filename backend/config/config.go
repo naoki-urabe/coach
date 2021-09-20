@@ -1,8 +1,6 @@
 package config
 
 import (
-	"gopkg.in/ini.v1"
-	"log"
 	"os"
 )
 
@@ -13,24 +11,19 @@ type ConfigList struct {
 	DbUserPassword string
 	DbHost         string
 	DbPort         string
-	ServerPort     int
+	ApiPort        string
 }
 
 var Config ConfigList
 
 func init() {
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		log.Printf("Failed to read file:%v", err)
-		os.Exit(1)
-	}
 	Config = ConfigList{
-		DbDriverName:   cfg.Section("db").Key("db_driver_name").String(),
-		DbName:         cfg.Section("db").Key("db_name").String(),
-		DbUserName:     cfg.Section("db").Key("db_user_name").String(),
-		DbUserPassword: cfg.Section("db").Key("db_user_password").String(),
-		DbHost:         cfg.Section("db").Key("db_host").String(),
-		DbPort:         cfg.Section("db").Key("db_port").String(),
-		ServerPort:     cfg.Section("db").Key("server_port").MustInt(),
+		DbDriverName:   os.Getenv("DB_DRIVER_NAME"),
+		DbName:         os.Getenv("DB_NAME"),
+		DbUserName:     os.Getenv("DB_USERNAME"),
+		DbUserPassword: os.Getenv("DB_USER_PASSWORD"),
+		DbHost:         os.Getenv("DB_HOST"),
+		DbPort:         os.Getenv("DB_PORT"),
+		ApiPort:        os.Getenv("API_PORT"),
 	}
 }

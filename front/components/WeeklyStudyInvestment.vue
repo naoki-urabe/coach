@@ -1,6 +1,5 @@
 <script>
 import { Bar } from "vue-chartjs";
-import axios from "axios";
 export default {
   extends: Bar,
   data() {
@@ -20,8 +19,8 @@ export default {
   },
   methods: {
     getWeeklyPeriodDiff: async function (token) {
-      const weeklyDiff = await axios.get(
-        "http://localhost:8080/api/study-log/aggregation/weekly",
+      const weeklyDiff = await this.$axios.get(
+        "/study-log/aggregation/weekly",
         { headers: { Authorization: token } }
       );
       return weeklyDiff.data;

@@ -1,31 +1,6 @@
 import colors from "vuetify/es5/util/colors";
 
 export default {
-  auth: {
-    redirect: {
-      login: "/login",
-      logout: "/login",
-      callback: false,
-      home: "/"
-    },
-    strategies: {
-      local: {
-        endpoints: {
-          login: {
-            url: "/auth/login",
-            method: "post",
-            propertyName: "token"
-          },
-          logout: false,
-          user: false
-          // user: {url: '/api/auth/user', method: 'get', propertyName: 'user'}
-        }
-      }
-    }
-  },
-  axios: {
-    baseURL: `http://${process.env.HOST}:${process.env.API_PORT}/api`
-  },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
@@ -49,7 +24,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~/plugins/axios.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -62,7 +37,31 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: ["@nuxtjs/axios", "@nuxtjs/auth-next"],
-
+  axios: {
+    baseURL: `http://${process.env.NUXT_ENV_APP_HOST}:${process.env.NUXT_ENV_API_PORT}/api/`
+  },
+  auth: {
+    redirect: {
+      login: "/login",
+      logout: "/login",
+      callback: false,
+      home: "/"
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/auth/login',
+            method: "post",
+            propertyName: "token"
+          },
+          logout: false,
+          user: false
+          // user: {url: '/api/auth/user', method: 'get', propertyName: 'user'}
+        }
+      }
+    }
+  },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ["~/assets/variables.scss"],
@@ -88,13 +87,13 @@ export default {
     middleware: ["auth"]
   },
   publicRuntimeConfig: {
-    appHost: process.env.APP_HOST,
-    apiPort: process.env.API_PORT,
-    frontPort: process.env.FRONT_PORT
+    appHost: process.env.NUXT_ENV_APP_HOST,
+    apiPort: process.env.NUXT_ENV_API_PORT,
+    frontPort: process.env.NUXT_ENV_FRONT_PORT,
   },
   privateRuntimeConfig: {},
   server: {
     host: '0.0.0.0',
-    port: process.env.FRONT_PORT
+    port: process.env.NUXT_ENV_FRONT_PORT
   }
 };

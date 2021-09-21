@@ -3,20 +3,22 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./docker/api/Dockerfile.api
+      dockerfile: ./docker/api/Dockerfile.api.prod
     image: "${API_IMAGE}"
     tty: true
     volumes:
       - .:/app
     stdin_open: true
+    env_file: .env.prod.api
   front:
     build:
       context: .
-      dockerfile: ./docker/front/Dockerfile.front
+      dockerfile: ./docker/front/Dockerfile.front.prod
     image: "${FRONT_IMAGE}"
     tty: true
     volumes:
       - .:/app
+    env_file: .env.prod.front
   task:
     build:
       context: .
@@ -25,3 +27,4 @@ services:
     tty: true
     volumes:
       - ./backend/db:/app
+    env_file: .env.prod.api

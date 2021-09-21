@@ -88,13 +88,13 @@ export default {
     middleware: ["auth"]
   },
   publicRuntimeConfig: {
-    host: process.env.HOST,
+    appHost: process.env.APP_HOST,
     apiPort: process.env.API_PORT,
     frontPort: process.env.FRONT_PORT
   },
   privateRuntimeConfig: {},
   server: {
-    port: process.env.FRONT_PORT,
-    host: process.env.HOST
+    host: '0.0.0.0',
+    port: process.env.FRONT_PORT
   }
 };

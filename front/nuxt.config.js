@@ -95,6 +95,6 @@ export default {
   privateRuntimeConfig: {},
   server: {
     port: process.env.FRONT_PORT,
-    host: process.env.HOST
+    host: `http://${process.env.APP_HOST}`
   }
 };

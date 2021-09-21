@@ -3,7 +3,6 @@ package controllers
 import (
 	"coach/config"
 	"coach/models"
-	"coach/config"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"

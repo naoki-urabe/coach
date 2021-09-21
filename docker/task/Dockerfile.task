@@ -1,0 +1,8 @@
+FROM golang:1.16.3-alpine
+RUN apk update\
+    && apk add --no-cache --update curl bash
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz \
+    && mv ./migrate.linux-amd64 /usr/bin/migrate
+WORKDIR /app
+COPY backend/db /app
+CMD bash -c "sleep 20s && migrate -database  $DB_DRIVER_NAME://$DB_USERNAME:$DB_USER_PASSWORD@tcp'($DB_HOST:$DB_PORT)'/$DB_NAME -path migrations up"

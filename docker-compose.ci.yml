@@ -1,0 +1,27 @@
+version: '3.7'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/api/Dockerfile.api
+    image: "${API_IMAGE}"
+    tty: true
+    volumes:
+      - .:/app
+    stdin_open: true
+  front:
+    build:
+      context: .
+      dockerfile: ./docker/front/Dockerfile.front
+    image: "${FRONT_IMAGE}"
+    tty: true
+    volumes:
+      - .:/app
+  task:
+    build:
+      context: .
+      dockerfile: ./docker/task/Dockerfile.task
+    image: "${TASK_IMAGE}"
+    tty: true
+    volumes:
+      - ./backend/db:/app

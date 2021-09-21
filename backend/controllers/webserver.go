@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"coach/models"
 	"coach/config"
+	"coach/models"
 	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"

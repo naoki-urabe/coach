@@ -3,4 +3,7 @@ backend/db/mysql_data/
 .env.dev.api
 .env.dev.front
 .env.dev.db
+.env.prod.api
+.env.prod.front
+.env.prod.db
 front/.vscode-server

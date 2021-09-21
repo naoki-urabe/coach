@@ -21,7 +21,7 @@ services:
     image: ghcr.io/naoki-urabe/coach/task:prod
     tty: true
     depends_on:
-      - mysql_prod
+      - coach_db_prod
     env_file:
       .env.prod.api
   coach_db_prod:

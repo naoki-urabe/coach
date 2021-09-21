@@ -9,6 +9,7 @@ services:
     volumes:
       - .:/app
     stdin_open: true
+    env_file: .env.prod.api
   front:
     build:
       context: .
@@ -17,6 +18,7 @@ services:
     tty: true
     volumes:
       - .:/app
+    env_file: .env.prod.front
   task:
     build:
       context: .
@@ -25,3 +27,4 @@ services:
     tty: true
     volumes:
       - ./backend/db:/app
+    env_file: .env.prod.api

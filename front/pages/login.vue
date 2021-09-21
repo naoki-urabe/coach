@@ -17,7 +17,7 @@
 export default {
   data() {
     return {
-      registerUserURL: `http://${this.$config.host}:${this.$config.frontPort}/register-user`,
+      registerUserURL: `http://${this.$config.appHost}:${this.$config.frontPort}/register-user`,
       id: "",
       password: "",
     };

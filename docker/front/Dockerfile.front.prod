@@ -2,6 +2,7 @@ FROM node:16.0.0-alpine
 COPY ./front /app
 WORKDIR /app
 RUN apk update \
+    && apk add --no-cache --update python3 g++
     && npm install \
     && npm run build
 CMD npm start

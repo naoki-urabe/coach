@@ -2,7 +2,7 @@ name: CI/CD
 on:
   push:
     branches:
-      - prepare-for-production
+      - master
 env:
   API_IMAGE: ghcr.io/naoki-urabe/coach/api:prod
   FRONT_IMAGE: ghcr.io/naoki-urabe/coach/front:prod

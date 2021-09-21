@@ -90,7 +90,7 @@ export default {
   publicRuntimeConfig: {
     host: process.env.HOST,
     apiPort: process.env.API_PORT,
-    frontPort: parseInt(process.env.FRONT_PORT) + 1
+    frontPort: process.env.FRONT_PORT
   },
   privateRuntimeConfig: {},
   server: {

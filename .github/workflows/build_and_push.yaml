@@ -2,7 +2,11 @@ name: CI/CD
 on:
   push:
     branches:
+<<<<<<< HEAD
       - prepare-for-production
+=======
+      - master
+>>>>>>> ed4971dc99c2126341e3c86def011a4389b56131
 env:
   API_IMAGE: ghcr.io/naoki-urabe/coach/api:prod
   FRONT_IMAGE: ghcr.io/naoki-urabe/coach/front:prod
@@ -19,6 +23,7 @@ jobs:
           echo "API_PORT=${{ secrets.API_PORT }}" >> $GITHUB_ENV
           echo "FRONT_PORT=${{ secrets.FRONT_PORT }}" >> $GITHUB_ENV
           echo "MYSQL_PORT=${{ secrets.MYSQL_TCP_PORT }}" >> $GITHUB_ENV
+<<<<<<< HEAD
       #- name: Add environment variable to .env.prod
       #  run: |
       #    echo MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env.prod.db
@@ -43,6 +48,27 @@ jobs:
       #    echo VUE_APP_HOST="${{ secrets.API_HOST }}" >> .env.prod.front
       #    echo VUE_APP_API_PORT=50534 >> .env.prod.front
       #    echo VUE_APP_FRONT_PORT=56294 >> .env.prod.front
+=======
+      - name: Add environment variable to .env.prod
+        run: |
+          echo MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env.prod.db
+          echo MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" >> .env.prod.db
+          echo MYSQL_TCP_PORT=55821 >> .env.prod.db
+      - name: Add environment variable to .env.prod.api
+        run: |
+          echo API_PORT=57249 >> .env.prod.api
+          echo DB_DRIVER_NAME=mysql >> .env.prod.api
+          echo DB_NAME="${{ secrets.MYSQL_DATABASE }}" >> .env.prod.api
+          echo DB_USERNAME=root >> .env.prod.api
+          echo DB_USER_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env.prod.api
+          echo DB_HOST=coach_db_prod >> .env.prod.api
+          echo DB_PORT=55821 >> .env.prod.api
+      - name: Add environment variable to .env.prod.front
+        run: |
+          echo APP_HOST="${{ secrets.APP_HOST }}" >> .env.prod.front
+          echo API_PORT=57249 >> .env.prod.front
+          echo FRONT_PORT=53504 >> .env.prod.front
+>>>>>>> ed4971dc99c2126341e3c86def011a4389b56131
       - name: Log in to Github packages
         run: echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
         env:

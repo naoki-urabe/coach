@@ -35,9 +35,14 @@ jobs:
           echo DB_PORT=55821 >> .env.prod.api
       - name: Add environment variable to .env.prod.front
         run: |
-          echo APP_HOST="${{ secrets.APP_HOST }}" >> .env.prod.front
-          echo API_PORT=57249 >> .env.prod.front
-          echo FRONT_PORT=53504 >> .env.prod.front
+          echo NUXT_ENV_APP_HOST="${{ secrets.APP_HOST }}" >> .env.prod.front
+          echo NUXT_ENV_API_PORT=57249 >> .env.prod.front
+          echo NUXT_ENV_FRONT_PORT=53504 >> .env.prod.front
+      - name: Add environment variable to .env.prod.front
+        run: |
+          echo NUXT_ENV_APP_HOST="${{ secrets.APP_HOST }}" >> front/.env
+          echo NUXT_ENV_API_PORT=57249 >> front/.env
+          echo NUXT_ENV_FRONT_PORT=53504 >> front/.env
       - name: Log in to Github packages
         run: echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
         env:

@@ -23,7 +23,7 @@ export default {
     register: async function () {
       await this.$axios({
         method: "post",
-        url: "/auth/register",
+        url: '/auth/register',
         data: {
           id: this.id,
           pw: this.password,

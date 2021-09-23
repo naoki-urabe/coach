@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users(
     id VARCHAR(20) PRIMARY KEY,
-    pw VARCHAR(20) NOT NULL,
+    pw VARCHAR(100) NOT NULL,
     private_key VARCHAR(2048) NOT NULL,
     public_key VARCHAR(2048) NOT NULL
 );

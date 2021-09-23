@@ -1,5 +1,10 @@
 package models
 
+import (
+	"crypto/sha256"
+	"fmt"
+)
+
 type User struct {
 	Id         string `db:"id" json:"id"`
 	Pw         string `db:"pw" json:"pw"`
@@ -18,5 +23,8 @@ func InsertUser(user *User) {
 }
 
 func FindUser(user *User) {
+	p := []byte(user.Pw)
+	sha256 := sha256.Sum256(p)
+	user.Pw = fmt.Sprintf("%x", sha256)
 	Db.Get(user, findUser, user.Id, user.Pw)
 }

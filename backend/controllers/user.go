@@ -4,7 +4,9 @@ import (
 	"coach/models"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -27,6 +29,9 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	publicKey := &privateKey.PublicKey
 	privateKeyPemStr := exportPrivateKeyAsPEMStr(privateKey)
 	publicKeyPemStr := exportPublicKeyAsPEMStr(publicKey)
+	p := []byte(user.Pw)
+	sha256 := sha256.Sum256(p)
+	user.Pw = fmt.Sprintf("%x", sha256)
 	user.PrivateKey = privateKeyPemStr
 	user.PublicKey = publicKeyPemStr
 	models.InsertUser(&user)

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p>{{ username }}さんの学習記録</p>
     <v-container>
       <v-row>
         <v-col cols="4" v-if="!this.$store.state.studyLog.isStart">

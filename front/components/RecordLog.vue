@@ -46,6 +46,7 @@ export default {
         { text: "勉強時間", value: "time" },
       ],
       studyLogs: [],
+      username: ""
     };
   },
   computed: {
@@ -58,13 +59,11 @@ export default {
       const bodyParameters = {
         subject_code: this.subjectCode,
         study_start_time: new Date(),
+        user: this.username
       };
       const response = await this.$axios.post(
         "/study-log/start",
         bodyParameters,
-        {
-          headers: { Authorization: token },
-        }
       );
       this.$store.commit("studyLog/isStartStateChange");
       this.$store.commit("studyLog/changeCurrentId", response.data.id);
@@ -81,9 +80,6 @@ export default {
       const response = await this.$axios.post(
         "/study-log/finish",
         bodyParameters,
-        {
-          headers: { Authorization: token },
-        }
       );
       this.$store.commit("studyLog/isStartStateChange");
       this.$store.commit("studyLog/changeCurrentId", response.data.id);
@@ -164,11 +160,9 @@ export default {
       }
     },
     getAllStudyLogs: async function (token) {
-      const allStudyLogs = await this.$axios.get(
+      const allStudyLogs = await this.$axios.post(
         "/study-log/all",
-        {
-          headers: { Authorization: token },
-        }
+        {user: this.username},
       );
       if (allStudyLogs.data === null) {
         return [];
@@ -177,7 +171,6 @@ export default {
     },
     getAllSubjects: async function (token) {
       const allSubjects = await this.$axios.get("/subject", {
-        headers: { Authorization: token },
       });
       if (allSubjects.data === null) {
         return [];
@@ -186,6 +179,7 @@ export default {
     },
   },
   mounted: async function () {
+    this.username = this.$auth.user
     let token = this.$auth.strategy.token.get();
     const response = await this.getAllStudyLogs(token);
     this.subjects = await this.getAllSubjects(token);

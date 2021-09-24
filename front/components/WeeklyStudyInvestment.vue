@@ -15,13 +15,14 @@ export default {
         ],
       },
       options: { responsive: true, maintainAspectRatio: false },
+      username: ""
     };
   },
   methods: {
     getWeeklyPeriodDiff: async function (token) {
-      const weeklyDiff = await this.$axios.get(
+      const weeklyDiff = await this.$axios.post(
         "/study-log/aggregation/weekly",
-        { headers: { Authorization: token } }
+        { user: this.username },
       );
       return weeklyDiff.data;
     },
@@ -38,6 +39,7 @@ export default {
   },
   mounted: async function () {
     const token = this.$auth.strategy.token.get();
+    this.username = this.$auth.user
     const response = await this.getWeeklyPeriodDiff(token);
     this.setPeriodDiff(response);
     this.renderChart(this.chartdata, this.options);

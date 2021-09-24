@@ -9,6 +9,10 @@ import (
 	"net/http"
 )
 
+type User struct {
+	User string
+}
+
 var addStudyStartLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {
@@ -53,8 +57,13 @@ var getAllStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	if (*r).Method == "OPTIONS" {
 		return
 	}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	var user User
+	if err := json.Unmarshal(reqBody, &user); err != nil {
+		panic(err)
+	}
 	var studyLogs []models.StudyLog
-	models.GetAllStudyLog(&studyLogs)
+	models.GetAllStudyLog(user.User, &studyLogs)
 	responseBody, err := json.Marshal(studyLogs)
 	if err != nil {
 		log.Fatal(err)
@@ -67,8 +76,13 @@ var getDailyStudyInvestment = http.HandlerFunc(func(w http.ResponseWriter, r *ht
 	if (*r).Method == "OPTIONS" {
 		return
 	}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	var user User
+	if err := json.Unmarshal(reqBody, &user); err != nil {
+		panic(err)
+	}
 	var periodDiff []models.PeriodDiff
-	models.GetDailyStudyInvestment(&periodDiff)
+	models.GetDailyStudyInvestment(user.User, &periodDiff)
 	responseBody, err := json.Marshal(periodDiff)
 	if err != nil {
 		log.Fatal(err)
@@ -81,8 +95,13 @@ var getWeeklyStudyInvestment = http.HandlerFunc(func(w http.ResponseWriter, r *h
 	if (*r).Method == "OPTIONS" {
 		return
 	}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	var user User
+	if err := json.Unmarshal(reqBody, &user); err != nil {
+		panic(err)
+	}
 	var periodDiff []models.PeriodDiff
-	models.GetWeeklyStudyInvestment(&periodDiff)
+	models.GetWeeklyStudyInvestment(user.User, &periodDiff)
 	responseBody, err := json.Marshal(periodDiff)
 	if err != nil {
 		log.Fatal(err)

@@ -10,25 +10,27 @@ export default {
           {
             label: ["日別学習投資量"],
             backgroundColor: "#4169e1",
-            data: [],
-          },
-        ],
+            data: []
+          }
+        ]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        maintainAspectRatio: false
       },
+      username: ""
     };
   },
   methods: {
-    getDailyPeriodDiff: async function (token) {
-      const dailyDiff = await this.$axios.get(
+    getDailyPeriodDiff: async function(token) {
+      const bodyParameters = { 'user': this.username };
+      const dailyDiff = await this.$axios.post(
         "/study-log/aggregation/daily",
-        { headers: { Authorization: token } }
+        bodyParameters
       );
       return dailyDiff.data;
     },
-    setPeriodDiff: async function (dailyPeriodDiff) {
+    setPeriodDiff: async function(dailyPeriodDiff) {
       for (let i = 0; i < dailyPeriodDiff.length; i++) {
         this.chartdata["labels"].splice(i, 0, dailyPeriodDiff[i]["period"]);
         this.chartdata["datasets"][0]["data"].splice(
@@ -37,13 +39,14 @@ export default {
           dailyPeriodDiff[i]["diff"]
         );
       }
-    },
+    }
   },
-  mounted: async function () {
+  mounted: async function() {
+    this.username = this.$auth.user
     const token = this.$auth.strategy.token.get();
     const response = await this.getDailyPeriodDiff(token);
     this.setPeriodDiff(response);
     this.renderChart(this.chartdata, this.options);
-  },
+  }
 };
 </script>

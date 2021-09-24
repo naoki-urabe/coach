@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS study_logs(
     content VARCHAR(200),
     comment VARCHAR(200),
     study_start_time DATETIME NOT NULL,
-    study_finish_time DATETIME
+    study_finish_time DATETIME,
+    user VARCHAR(20)
 );

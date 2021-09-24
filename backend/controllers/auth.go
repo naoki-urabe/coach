@@ -109,6 +109,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	os.Setenv("PUBLICKEY", publicKey)
-	token := getTokenHandler(privateKey)
-	w.Write([]byte(token))
+	type Response struct {
+		Token string `json:"token"`
+		User  string `json:"user"`
+	}
+	response := Response{
+		Token: getTokenHandler(privateKey),
+		User:  user.Id,
+	}
+	json, _ := json.Marshal(response)
+	w.Write(json)
 }

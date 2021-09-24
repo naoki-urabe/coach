@@ -25,9 +25,7 @@ export default {
         subject_code: this.subjectCode,
         subject_name: this.subjectName,
       };
-      await this.$axios.post("/subject", bodyParameters, {
-        headers: { Authorization: token },
-      });
+      await this.$axios.post("/subject", bodyParameters, );
       this.subjectCode = "";
       this.subjectName = "";
     },

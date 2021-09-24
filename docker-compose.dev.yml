@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+  development:
+    build:
+      context: .
+      dockerfile: ./docker/dev/Dockerfile.dev
+    tty: true
+    volumes:
+      - .:/app
+    ports:
+      - 59822:59822
+      - 55824:55824
+    stdin_open: true
+    env_file: .env.dev
+  coach_db_dev:
+    image: mysql:8.0.26
+    restart: always
+    ports:
+      - 50284:50284
+    volumes:
+      - ./backend/db/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./backend/db/mysql_data:/var/lib/mysql
+    env_file: .env.dev.db

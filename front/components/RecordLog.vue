@@ -180,7 +180,7 @@ export default {
     },
   },
   mounted: async function () {
-    this.username = this.$auth.user
+    this.username = this.$auth.$storage.getLocalStorage("user");
     let token = this.$auth.strategy.token.get();
     const response = await this.getAllStudyLogs(token);
     this.subjects = await this.getAllSubjects(token);

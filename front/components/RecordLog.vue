@@ -54,6 +54,9 @@ export default {
     getId() {
       return this.$store.getters["studyLog/getId"];
     },
+    /*getIsStart() {
+      return this.$store.getters["studyLog/getIsStart"];
+    }*/
   },
   methods: {
     createRecord: async function (token) {

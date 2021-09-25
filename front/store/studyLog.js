@@ -13,7 +13,16 @@ export const mutations = {
 };
 
 export const getters = {
-    getId(state) {
-        return state.currentId
-    }
+  getIsStart(state) {
+    return state.isStart
+  },
+  getId(state) {
+      return state.currentId
+  }
+}
+
+export default {
+  state,
+  mutations,
+  getters,
 }

@@ -28,6 +28,7 @@ export default {
         const response = await this.$auth.loginWith('local', {data: {"Id": this.id, "Pw": this.password}});
         this.$auth.strategy.token.set(response.data.token)
         this.$auth.setUser(response.data.user)
+        this.$auth.$storage.setLocalStorage("user", response.data.user)
       } catch(error) {
         console.log(error)
       }

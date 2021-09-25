@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted: async function() {
-    this.username = this.$auth.user
+    this.username = this.$auth.$storage.getLocalStorage("user");
     const token = this.$auth.strategy.token.get();
     const response = await this.getDailyPeriodDiff(token);
     this.setPeriodDiff(response);

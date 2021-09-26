@@ -9,13 +9,14 @@
             :items="subjects"
             item-text="subject_name"
             item-value="subject_code"
+            label="科目名"
           ></v-select>
         </v-col>
         <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
-          <v-text-field v-model="content"></v-text-field>
+          <v-text-field v-model="content" label="内容"></v-text-field>
         </v-col>
         <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
-          <v-text-field v-model="comment"></v-text-field>
+          <v-text-field v-model="comment" label="感想"></v-text-field>
         </v-col>
         <v-col cols="4">
           <v-btn @click="recordTime">submit</v-btn>

@@ -5,7 +5,7 @@
       <v-container>
         <v-col cols="5">
           <v-text-field v-model="id" label="ID"> </v-text-field>
-          <v-text-field v-model="password" label="PASSWORD"></v-text-field>
+          <v-text-field v-model="password" label="PASSWORD" type="password"></v-text-field>
           <v-btn @click="login">submit</v-btn>
         </v-col>
         <v-btn :href="registerUserURL">新規ユーザ登録</v-btn>

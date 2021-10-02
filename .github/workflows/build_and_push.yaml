@@ -55,3 +55,15 @@ jobs:
           docker push ${{ env.API_IMAGE }}
           docker push ${{ env.FRONT_IMAGE }}
           docker push ${{ env.TASK_IMAGE }}
+      - name: install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: deploy
+        run: bash deploy.sh
+        env:
+          HOST: ${{ secrets.HOST_NAME }}
+          USER: ${{ secrets.USER }}
+          HOST_PORT: ${{ secrets.HOST_PORT }}

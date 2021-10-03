@@ -62,7 +62,7 @@ jobs:
           name: id_rsa
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - name: deploy
-        run: bash deploy.sh
+        run: bash scripts/deploy.sh
         env:
           HOST: ${{ secrets.HOST_NAME }}
           USER: ${{ secrets.USER }}

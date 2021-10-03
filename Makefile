@@ -19,7 +19,7 @@ set-mysql-dev-dump-info:
 	docker exec -it coach_coach_db_dev_1 mysql_config_editor set --login-path=mysqldump -u root -p
 
 mysql-backup-dev:
-	docker exec -it coach_coach_db_dev_1 mysqldump coach_db > ./backend/db/backup/backup.sql
+	bash scripts/backup_dev.sh
 
 mysql-restore-dev:
 	docker exec -i coach_coach_db_dev_1 mysql coach_db < ./backend/db/backup/backup.sql
@@ -31,7 +31,7 @@ set-mysql-prod-dump-info:
 	docker exec -it coach_coach_db_prod_1 mysql_config_editor set --login-path=mysqldump -u root -p
 
 mysql-backup-prod:
-	docker exec -it coach_coach_db_prod_1 mysqldump coach_db > ./backend/db/backup/backup.sql
+	bash scripts/backup_prd.sh
 
 mysql-restore-prod:
 	docker exec -i coach_coach_db_prod_1 mysql coach_db < ./backend/db/backup/backup.sql

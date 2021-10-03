@@ -11,3 +11,27 @@ run-container:
 
 run-mysql:
 	docker run --name mysql -e MYSQL_ROOT_PASSWORD=fg47gh62 -p 3306:3306 -d mysql:8.0
+
+set-mysql-dev-login-info:
+	docker exec -it coach_coach_db_dev_1 mysql_config_editor set -u root -p
+
+set-mysql-dev-dump-info:
+	docker exec -it coach_coach_db_dev_1 mysql_config_editor set --login-path=mysqldump -u root -p
+
+mysql-backup-dev:
+	docker exec -it coach_coach_db_dev_1 mysqldump coach_db > ./backend/db/backup/backup.sql
+
+mysql-restore-dev:
+	docker exec -i coach_coach_db_dev_1 mysql coach_db < ./backend/db/backup/backup.sql
+
+set-mysql-prod-login-info:
+	docker exec -it coach_coach_db_prod_1 mysql_config_editor set -u root -p
+
+set-mysql-prod-dump-info:
+	docker exec -it coach_coach_db_prod_1 mysql_config_editor set --login-path=mysqldump -u root -p
+
+mysql-backup-prod:
+	docker exec -it coach_coach_db_prod_1 mysqldump coach_db > ./backend/db/backup/backup.sql
+
+mysql-restore-prod:
+	docker exec -i coach_coach_db_prod_1 mysql coach_db < ./backend/db/backup/backup.sql

@@ -8,3 +8,4 @@ backend/db/mysql_data/
 .env.prod.front
 .env.prod.db
 front/.vscode-server
+backup/

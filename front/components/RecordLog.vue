@@ -40,6 +40,7 @@ export default {
       startTime: null,
       finishTime: null,
       headers: [
+        { text: "日付", value: "date"},
         { text: "科目名", value: "subject" },
         { text: "内容", value: "content" },
         { text: "感想", value: "comment" },
@@ -109,10 +110,11 @@ export default {
     addLatestStudyLog: async function (latestStudyLog) {
       this.studyLogs.push({
         id: latestStudyLog.id,
+        date: dayjs(latestStudyLog.study_start_time).format("YYYY-MM-DD"),
         subject: latestStudyLog.subject_code,
         content: null,
         comment: null,
-        start: latestStudyLog.study_start_time,
+        start: dayjs(latestStudyLog.study_start_time).format("HH:mm"),
         end: null,
         time: null,
       });
@@ -140,7 +142,7 @@ export default {
       this.$set(
         this.studyLogs[idx],
         "end",
-        latestStudyLog.study_finish_time
+        dayjs(latestStudyLog.study_finish_time).format("HH:mm")
       );
       const end = dayjs(latestStudyLog.study_finish_time);
       const start = dayjs(latestStudyLog.study_start_time);
@@ -155,11 +157,12 @@ export default {
         const time = parseInt(end.diff(start) / 1000 / 60, 10);
         this.studyLogs.push({
           id: log.id,
+          date: dayjs(log.study_start_time).format("YYYY-MM-DD"),
           subject: log.subject_code,
           content: log.content,
           comment: log.comment,
-          start: log.study_start_time,
-          end: log.study_finish_time,
+          start: dayjs(log.study_start_time).format("HH:mm"),
+          end: dayjs(log.study_finish_time).format("HH:mm"),
           time: time,
         });
       }

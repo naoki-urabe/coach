@@ -9,3 +9,4 @@ backend/db/mysql_data/
 .env.prod.db
 front/.vscode-server
 backup/
+tmp/

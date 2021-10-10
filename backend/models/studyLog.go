@@ -28,7 +28,7 @@ var getDailyStudyInvestmentQuery = `
 SELECT period,SUM(diff) AS diff
     FROM 
 	    (SELECT CAST(study_start_time AS DATE) AS period,
-		TIMEDIFF(study_finish_time,study_start_time) AS diff 
+		MINUTE(TIMEDIFF(study_finish_time,study_start_time)) AS diff 
         FROM study_logs
 		WHERE user = ?) 
 	AS t
@@ -40,7 +40,7 @@ SELECT period, SUM(diff) AS diff
     FROM 
         (SELECT 
             CAST(SUBDATE(study_start_time, WEEKDAY(study_start_time)) as DATE) as period,
-            TIMEDIFF(study_finish_time,study_start_time) as diff 
+            MINUTE(TIMEDIFF(study_finish_time,study_start_time)) as diff 
             From study_logs
 		WHERE user = ?)
         AS t

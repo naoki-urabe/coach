@@ -23,7 +23,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20">
+    <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20" :options="pagination">
     </v-data-table>
   </div>
 </template>
@@ -49,7 +49,11 @@ export default {
         { text: "勉強時間", value: "time" },
       ],
       studyLogs: [],
-      username: ""
+      username: "",
+      pagination: {
+        sortBy: ['date'],
+        sortDesc: [true]
+      }
     };
   },
   computed: {

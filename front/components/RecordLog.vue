@@ -24,8 +24,10 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20" :options="pagination">
-    </v-data-table>
+    <v-card>
+      <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20" :options="pagination">
+      </v-data-table>
+    </v-card>
   </div>
 </template>
 

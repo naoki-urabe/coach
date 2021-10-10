@@ -91,9 +91,9 @@ func GetLatestStudyLog(studyLog *StudyLog, id int) {
 }
 
 func GetDailyStudyInvestment(user string, periodDiff *[]PeriodDiff) {
-	Db.Select(periodDiff, getDailyStudyInvestmentQuery)
+	Db.Select(periodDiff, getDailyStudyInvestmentQuery, user)
 }
 
 func GetWeeklyStudyInvestment(user string, periodDiff *[]PeriodDiff) {
-	Db.Select(periodDiff, getWeeklyStudyInvestmentQuery)
+	Db.Select(periodDiff, getWeeklyStudyInvestmentQuery, user)
 }

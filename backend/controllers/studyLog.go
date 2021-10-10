@@ -3,7 +3,7 @@ package controllers
 import (
 	"coach/models"
 	"encoding/json"
-	_ "fmt"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -71,6 +71,28 @@ var getAllStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	w.Write(responseBody)
 })
 
+var getSubjectStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	reqBody, err := ioutil.ReadAll(r.Body)
+	type Req struct {
+		User string
+		SubjectCode string
+	}
+	var req Req
+	if err := json.Unmarshal(reqBody, &req); err != nil {
+		panic(err)
+	}
+	var studyLogs []models.StudyLog
+	models.GetSubjectStudyLog(req.User,req.SubjectCode, &studyLogs)
+	responseBody, err := json.Marshal(studyLogs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})
 var getDailyStudyInvestment = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {

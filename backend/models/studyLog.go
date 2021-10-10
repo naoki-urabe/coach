@@ -17,6 +17,10 @@ var getAllStudyLogQuery = `
 SELECT * FROM study_logs WHERE user = ?;
 `
 
+var getSubjectStudyLogQuery = `
+SELECT * FROM study_logs WHERE user = ? AND subject_code = ?;
+`
+
 var getLatestStudyLogQuery = `
 SELECT * FROM study_logs WHERE id = ?;`
 
@@ -84,6 +88,10 @@ func AddStudyFinishLog(finishLog *FinishLog) {
 
 func GetAllStudyLog(user string, studyLog *[]StudyLog) {
 	Db.Select(studyLog, getAllStudyLogQuery, user)
+}
+
+func GetSubjectStudyLog(user string, subjectCode string, studyLog *[]StudyLog) {
+	Db.Select(studyLog, getSubjectStudyLogQuery, user, subjectCode)
 }
 
 func GetLatestStudyLog(studyLog *StudyLog, id int) {

@@ -20,6 +20,7 @@ func StartWebServer() error {
 	studyLogRouter.HandleFunc("/start", addStudyStartLog)
 	studyLogRouter.HandleFunc("/finish", addStudyFinishLog)
 	studyLogRouter.HandleFunc("/all", getAllStudyLog)
+	studyLogRouter.HandleFunc("/subject", getSubjectStudyLog)
 	studyLogRouter.HandleFunc("/aggregation/daily", getDailyStudyInvestment)
 	studyLogRouter.HandleFunc("/aggregation/weekly", getWeeklyStudyInvestment)
 	studyLogRouter.Use(validateJWTMiddleware)

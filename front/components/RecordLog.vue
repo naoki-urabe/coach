@@ -10,6 +10,7 @@
             item-text="subject_name"
             item-value="subject_code"
             label="科目名"
+            @change="getStudyLogs"
           ></v-select>
         </v-col>
         <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
@@ -171,7 +172,27 @@ export default {
         });
       }
     },
-    getAllStudyLogs: async function (token) {
+    getStudyLogs: async function() {
+      this.studyLogs = []
+      if(this.subjectCode == "") {
+        const response = await this.getAllStudyLogs();
+        this.setStudyLogs(response);
+      } else {
+        const response = await this.getSubjectStudyLogs();
+        this.setStudyLogs(response);
+      }
+    },
+    getSubjectStudyLogs: async function() {
+      const subjectStudyLogs = await this.$axios.post(
+        "/study-log/subject",
+        {user: this.username,subjectCode: this.subjectCode},
+      )
+      if (subjectStudyLogs === null) {
+        return []
+      }
+      return subjectStudyLogs.data;
+    },
+    getAllStudyLogs: async function () {
       const allStudyLogs = await this.$axios.post(
         "/study-log/all",
         {user: this.username},
@@ -193,7 +214,7 @@ export default {
   mounted: async function () {
     this.username = this.$auth.$storage.getLocalStorage("user");
     let token = this.$auth.strategy.token.get();
-    const response = await this.getAllStudyLogs(token);
+    const response = await this.getAllStudyLogs();
     this.subjects = await this.getAllSubjects(token);
     this.setStudyLogs(response);
   },

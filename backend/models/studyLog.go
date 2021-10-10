@@ -48,13 +48,13 @@ GROUP BY period;
 `
 
 type StudyLog struct {
-	Id              int       `db:"id" json:"id"`
-	SubjectCode     string    `db:"subject_code" json:"subject_code"`
+	Id              int        `db:"id" json:"id"`
+	SubjectCode     string     `db:"subject_code" json:"subject_code"`
 	Content         *string    `db:"content" json:"content"`
 	Comment         *string    `db:"comment" json:"comment"`
-	StudyStartTime  time.Time `db:"study_start_time" json:"study_start_time"`
+	StudyStartTime  time.Time  `db:"study_start_time" json:"study_start_time"`
 	StudyFinishTime *time.Time `db:"study_finish_time" json:"study_finish_time"`
-	User            string    `db:"user" json:"user"`
+	User            string     `db:"user" json:"user"`
 }
 
 type StartLog struct {

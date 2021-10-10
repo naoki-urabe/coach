@@ -3,7 +3,7 @@ package controllers
 import (
 	"coach/models"
 	"encoding/json"
-	"fmt"
+	_ "fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -78,7 +78,7 @@ var getSubjectStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	}
 	reqBody, err := ioutil.ReadAll(r.Body)
 	type Req struct {
-		User string
+		User        string
 		SubjectCode string
 	}
 	var req Req
@@ -86,7 +86,7 @@ var getSubjectStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		panic(err)
 	}
 	var studyLogs []models.StudyLog
-	models.GetSubjectStudyLog(req.User,req.SubjectCode, &studyLogs)
+	models.GetSubjectStudyLog(req.User, req.SubjectCode, &studyLogs)
 	responseBody, err := json.Marshal(studyLogs)
 	if err != nil {
 		log.Fatal(err)

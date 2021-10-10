@@ -15,7 +15,17 @@ export default {
           },
         ],
       },
-      options: { responsive: true, maintainAspectRatio: false },
+      options: { 
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          } 
+        },
       username: ""
     };
   },

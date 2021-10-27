@@ -1,5 +1,0 @@
-FROM node:16.0.0-alpine
-#ENV HOME=/usr/local/coach
-WORKDIR /app
-RUN apk update \
-    && apk add --no-cache --update python3 make g++ git

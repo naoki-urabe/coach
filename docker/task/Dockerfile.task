@@ -1,6 +1,6 @@
-FROM golang:1.16.3-alpine
-RUN apk update\
-    && apk add --no-cache --update curl bash
+FROM golang:1.16.3
+RUN apt update\
+    && apt install -y curl bash
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.11.0/migrate.linux-amd64.tar.gz | tar xvz \
     && mv ./migrate.linux-amd64 /usr/bin/migrate
 WORKDIR /app

@@ -1,6 +1,7 @@
 <template>
   <v-form>
     <center>
+      <v-alert v-if="isLogin==='error'" type="error">ログインに失敗しました</v-alert>
       <h1>ログイン</h1>
       <v-container>
         <v-col cols="5">
@@ -20,6 +21,7 @@ export default {
       registerUserURL: `http://${this.$config.appHost}:${this.$config.frontPort}/register-user`,
       id: "",
       password: "",
+      isLogin: "",
     };
   },
   methods: {
@@ -30,6 +32,9 @@ export default {
         this.$auth.setUser(response.data.user)
         this.$auth.$storage.setLocalStorage("user", response.data.user)
       } catch(error) {
+        this.isLogin="error";
+        this.id="";
+        this.password="";
         console.log(error)
       }
     },

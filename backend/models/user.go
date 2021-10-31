@@ -24,18 +24,20 @@ SELECT * FROM users WHERE id = ?`
 func InsertUser(user *User) bool {
 	var existUser User
 	err := Db.Get(&existUser, checkDuplicateUserQuery, user.Id)
-	isExist := false
-	if err == nil {
-		isExist = true
-		return isExist
+	if err != nil {
+		return false
 	}
 	Db.Queryx(insertUserQuery, user.Id, user.Pw, user.PrivateKey, user.PublicKey)
-	return isExist
+	return true
 }
 
-func FindUser(user *User) {
+func FindUser(user *User) bool {
 	p := []byte(user.Pw)
 	sha256 := sha256.Sum256(p)
 	user.Pw = fmt.Sprintf("%x", sha256)
-	Db.Get(user, findUser, user.Id, user.Pw)
+	err := Db.Get(user, findUser, user.Id, user.Pw)
+	if err != nil {
+		return false
+	}
+	return true
 }

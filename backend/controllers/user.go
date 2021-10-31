@@ -34,10 +34,15 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	user.Pw = fmt.Sprintf("%x", sha256)
 	user.PrivateKey = privateKeyPemStr
 	user.PublicKey = publicKeyPemStr
-	models.InsertUser(&user)
+	isExists := models.InsertUser(&user)
 	responseBody, err := json.Marshal(user)
 	if err != nil {
 		log.Fatal(err)
 	}
-	w.Write(responseBody)
+	if isExists {
+		w.WriteHeader(409)
+		w.Write(responseBody)
+	} else {
+		w.Write(responseBody)
+	}
 }

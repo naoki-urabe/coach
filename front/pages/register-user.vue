@@ -1,9 +1,13 @@
 <template>
   <center>
     <v-alert
-      v-if="isSuccessRegister"
+      v-if="isSuccessRegister === 'success'"
       type="success"
     >ユーザ登録成功しました</v-alert>
+    <v-alert
+      v-if="isSuccessRegister === 'error'"
+      type="error"
+    >ユーザは既に存在しています</v-alert>
     <h1>ユーザ登録</h1>
     <v-container>
       <v-col cols="5">
@@ -21,25 +25,31 @@ export default {
     return {
       id: "",
       password: "",
-      isSuccessRegister: false,
+      isSuccessRegister: "",
     };
   },
   methods: {
     register: async function () {
-      const response = await this.$axios({
-        method: "post",
-        url: '/auth/register',
-        data: {
-          id: this.id,
-          pw: this.password,
-        },
-      });
-      if(response.status === 200){
-      	this.isSuccessRegister=true;
+      try {
+	      const response = await this.$axios({
+						method: "post",
+						url: '/auth/register',
+						data: {
+							id: this.id,
+							pw: this.password,
+						},
+				});
+				if(response.status === 200){
+						this.isSuccessRegister="success";
+						this.id="";
+						this.password="";
+				}
+      } catch (error) {
         this.id="";
-        this.password="";
+				this.password="";
+				this.isSuccessRegister="error";
+      	console.log(error);
       }
-      console.log(response);
     },
   },
 };

@@ -18,8 +18,19 @@ INSERT INTO users VALUES(?,?,?,?);
 var findUser = `
 SELECT * FROM users WHERE id = ? AND pw = ? LIMIT 1;`
 
-func InsertUser(user *User) {
-	Db.MustExec(insertUserQuery, user.Id, user.Pw, user.PrivateKey, user.PublicKey)
+var checkDuplicateUserQuery = `
+SELECT * FROM users WHERE id = ?`
+
+func InsertUser(user *User) bool {
+	var existUser User
+	err := Db.Get(&existUser, checkDuplicateUserQuery, user.Id)
+	isExist := false
+	if err == nil {
+		isExist = true
+		return isExist
+	}
+	Db.Queryx(insertUserQuery, user.Id, user.Pw, user.PrivateKey, user.PublicKey)
+	return isExist
 }
 
 func FindUser(user *User) {

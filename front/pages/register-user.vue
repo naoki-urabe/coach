@@ -36,8 +36,8 @@ export default {
       });
       if(response.status === 200){
       	this.isSuccessRegister=true;
-	this.id="";
-	this.password="";
+        this.id="";
+        this.password="";
       }
       console.log(response);
     },

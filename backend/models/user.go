@@ -18,12 +18,12 @@ INSERT INTO users VALUES(?,?,?,?);
 var findUser = `
 SELECT * FROM users WHERE id = ? AND pw = ? LIMIT 1;`
 
-var checkUserExistQuery = `
+var checkDuplicateUserQuery = `
 SELECT * FROM users WHERE id = ?`
 
 func InsertUser(user *User) bool {
 	var existUser User
-	err := Db.Get(&existUser, checkUserExistQuery, user.Id)
+	err := Db.Get(&existUser, checkDuplicateUserQuery, user.Id)
 	isExist := false
 	if err == nil {
 		isExist = true

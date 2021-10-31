@@ -1,5 +1,9 @@
 <template>
   <center>
+    <v-alert
+      v-if="isSuccessRegister"
+      type="success"
+    >ユーザ登録成功しました</v-alert>
     <h1>ユーザ登録</h1>
     <v-container>
       <v-col cols="5">
@@ -17,11 +21,12 @@ export default {
     return {
       id: "",
       password: "",
+      isSuccessRegister: false,
     };
   },
   methods: {
     register: async function () {
-      await this.$axios({
+      const response = await this.$axios({
         method: "post",
         url: '/auth/register',
         data: {
@@ -29,6 +34,12 @@ export default {
           pw: this.password,
         },
       });
+      if(response.status === 200){
+      	this.isSuccessRegister=true;
+	this.id="";
+	this.password="";
+      }
+      console.log(response);
     },
   },
 };

@@ -3,6 +3,7 @@ package models
 import (
 	"crypto/sha256"
 	"fmt"
+	"log"
 )
 
 type User struct {
@@ -22,13 +23,12 @@ var checkDuplicateUserQuery = `
 SELECT * FROM users WHERE id = ?`
 
 func InsertUser(user *User) bool {
-	var existUser User
-	err := Db.Get(&existUser, checkDuplicateUserQuery, user.Id)
+	_, err := Db.Queryx(insertUserQuery, user.Id, user.Pw, user.PrivateKey, user.PublicKey)
 	//errがnilだったら登録失敗
-	if err == nil {
+	if err != nil {
+		log.Println(err)
 		return false
 	}
-	Db.Queryx(insertUserQuery, user.Id, user.Pw, user.PrivateKey, user.PublicKey)
 	return true
 }
 
@@ -39,6 +39,7 @@ func FindUser(user *User) bool {
 	err := Db.Get(user, findUser, user.Id, user.Pw)
 	//errがnilじゃなかったらログインできない
 	if err != nil {
+		log.Println(err)
 		return false
 	}
 	return true

@@ -27,6 +27,6 @@ func StartWebServer() error {
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")
 	// router.HandleFunc("/api/auth/user", GetTokenHandler).Methods("GET", "OPTIONS")
 	router.HandleFunc("/api/auth/login", login).Methods("POST", "OPTIONS")
-	fmt.Printf("Listen %s...", config.Config.ApiPort)
+	fmt.Printf("Listen %s...\n", config.Config.ApiPort)
 	return http.ListenAndServe(fmt.Sprintf(":%s", config.Config.ApiPort), router)
 }

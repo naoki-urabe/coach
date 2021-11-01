@@ -24,7 +24,8 @@ SELECT * FROM users WHERE id = ?`
 func InsertUser(user *User) bool {
 	var existUser User
 	err := Db.Get(&existUser, checkDuplicateUserQuery, user.Id)
-	if err != nil {
+	//errがnilだったら登録失敗
+	if err == nil {
 		return false
 	}
 	Db.Queryx(insertUserQuery, user.Id, user.Pw, user.PrivateKey, user.PublicKey)
@@ -36,6 +37,7 @@ func FindUser(user *User) bool {
 	sha256 := sha256.Sum256(p)
 	user.Pw = fmt.Sprintf("%x", sha256)
 	err := Db.Get(user, findUser, user.Id, user.Pw)
+	//errがnilじゃなかったらログインできない
 	if err != nil {
 		return false
 	}

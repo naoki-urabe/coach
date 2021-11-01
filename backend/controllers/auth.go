@@ -119,9 +119,9 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 	json, _ := json.Marshal(response)
 	if isLogin {
-	    w.Write(json)
+		w.Write(json)
 	} else {
-	    w.WriteHeader(401)
-	    w.Write(json)
+		w.WriteHeader(401)
+		w.Write(json)
 	}
 }

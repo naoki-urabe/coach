@@ -35,3 +35,7 @@ mysql-backup-prod:
 
 mysql-restore-prod:
 	docker exec -i coach_coach_db_prod_1 mysql coach_db < ./backend/db/backup/backup.sql
+create-db:
+	migrate -database  'mysql://root:$(DB_USER_PASSWORD)@tcp(coach_db_dev:$(DB_PORT))/coach_db' -path backend/db/migrations up
+delete-db:
+	migrate -database  'mysql://root:$(DB_USER_PASSWORD)@tcp(coach_db_dev:$(DB_PORT))/coach_db' -path backend/db/migrations down

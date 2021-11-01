@@ -27,6 +27,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	}
 	if user.Id == "" || user.Pw == "" {
 		w.WriteHeader(406)
+		return
 	}
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	publicKey := &privateKey.PublicKey
@@ -37,14 +38,14 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	user.Pw = fmt.Sprintf("%x", sha256)
 	user.PrivateKey = privateKeyPemStr
 	user.PublicKey = publicKeyPemStr
-	isExists := models.InsertUser(&user)
+	isSuccess := models.InsertUser(&user)
 	responseBody, err := json.Marshal(user)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if isExists {
-		w.WriteHeader(409)
-	} else {
+	if isSuccess {
 		w.Write(responseBody)
+	} else {
+		w.WriteHeader(409)
 	}
 }

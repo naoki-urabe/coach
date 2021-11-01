@@ -7,7 +7,7 @@
     <v-alert
       v-if="isSuccessRegister === 'error'"
       type="error"
-    >ユーザは既に存在しています</v-alert>
+    >ユーザ登録失敗しました</v-alert>
     <h1>ユーザ登録</h1>
     <v-container>
       <v-col cols="5">

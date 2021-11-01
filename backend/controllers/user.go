@@ -25,6 +25,9 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal(reqBody, &user); err != nil {
 		log.Fatal(err)
 	}
+	if user.Id == "" || user.Pw == "" {
+		w.WriteHeader(406)
+	}
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	publicKey := &privateKey.PublicKey
 	privateKeyPemStr := exportPrivateKeyAsPEMStr(privateKey)
@@ -41,7 +44,6 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	}
 	if isExists {
 		w.WriteHeader(409)
-		w.Write(responseBody)
 	} else {
 		w.Write(responseBody)
 	}

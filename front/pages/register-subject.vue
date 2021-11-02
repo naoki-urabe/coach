@@ -21,23 +21,23 @@ export default {
   methods: {
     registerSubject: async function () {
     try {
-	      let token = this.$auth.strategy.token.get();
-	      const headers = {
+	  let token = this.$auth.strategy.token.get();
+	  const headers = {
 		Authorization: token,
-	      };
-	      const bodyParameters = {
+	  };
+	  const bodyParameters = {
 		subject_code: this.subjectCode,
 		subject_name: this.subjectName,
-	      };
-	      await this.$axios.post("/subject", bodyParameters, );
-	      this.isRegister="success";
-	      this.subjectCode = "";
-	      this.subjectName = "";
-	      } catch(e) {
-	      	this.isRegister="error";
+	  };
+	  await this.$axios.post("/subject", bodyParameters, );
+	  this.isRegister="success";
+	  this.subjectCode = "";
+	  this.subjectName = "";
+	  } catch(e) {
+		this.isRegister="error";
 		this.subjectCode = "";
 		this.subjectName = "";
-	      }
+	  }
     },
   },
 };

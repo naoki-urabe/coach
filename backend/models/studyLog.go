@@ -2,6 +2,7 @@ package models
 
 import (
 	_ "fmt"
+	"log"
 	"time"
 )
 
@@ -47,6 +48,10 @@ SELECT period, SUM(diff) AS diff
 GROUP BY period;
 `
 
+var deleteStudyLogQuery = `
+DELETE FROM study_logs WHERE id = ?;
+`
+
 type StudyLog struct {
 	Id              int        `db:"id" json:"id"`
 	SubjectCode     string     `db:"subject_code" json:"subject_code"`
@@ -84,6 +89,13 @@ func AddStudyStartLog(startLog *StartLog) int {
 
 func AddStudyFinishLog(finishLog *FinishLog) {
 	Db.MustExec(addStudyFinishLogQuery, finishLog.Content, finishLog.Comment, finishLog.StudyFinishTime, finishLog.Id)
+}
+
+func DeleteStudyLog(deleteId int) {
+	_, err := Db.Queryx(deleteStudyLogQuery, deleteId)
+	if err != err {
+		log.Println(err)
+	}
 }
 
 func GetAllStudyLog(user string, studyLog *[]StudyLog) {

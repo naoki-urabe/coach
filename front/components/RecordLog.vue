@@ -54,7 +54,7 @@ export default {
   data() {
     return {
       subjectCode: "",
-      subjects: [{subject_code: "",subject_name:"SELECT ALL"}],
+      subjects: [],
       comment: "",
       content: "",
       startTime: null,
@@ -136,13 +136,13 @@ export default {
 	      const currentId = this.$store.getters["studyLog/getId"];
 	      let response = null;
 	      if (currentId === -1) {
-		response = await this.createRecord(token);
-		const latestStudyLog = response.data;
-		this.addLatestStudyLog(latestStudyLog);
+			response = await this.createRecord(token);
+			const latestStudyLog = response.data;
+			this.addLatestStudyLog(latestStudyLog);
 	      } else {
-		response = await this.updateCurrentRecord(token, currentId);
-		const latestStudyLog = response.data;
-		this.updateLatestStudyLog(latestStudyLog);
+			response = await this.updateCurrentRecord(token, currentId);
+			const latestStudyLog = response.data;
+			this.updateLatestStudyLog(latestStudyLog);
 	      }
       } catch(err) {
       	console.log(err);

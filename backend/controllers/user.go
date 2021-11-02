@@ -27,6 +27,7 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 	}
 	if user.Id == "" || user.Pw == "" {
 		w.WriteHeader(406)
+		log.Printf("Error Register User:%s\n", user.Id)
 		return
 	}
 	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
@@ -44,8 +45,10 @@ func registerUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	if isSuccess {
+		log.Printf("Success Register User:%s\n", user.Id)
 		w.Write(responseBody)
 	} else {
+		log.Printf("Error Register User:%s\n", user.Id)
 		w.WriteHeader(409)
 	}
 }

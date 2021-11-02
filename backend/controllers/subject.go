@@ -19,12 +19,23 @@ var addSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal(reqBody, &subject); err != nil {
 		log.Fatal(err)
 	}
-	models.InsertSubject(&subject)
+	if subject.SubjectName == "" || subject.SubjectCode == "" {
+		w.WriteHeader(406)
+		log.Printf("Error Register Subject:%s\n", subject.SubjectName)
+		return
+	}
+	isSuccess := models.InsertSubject(&subject)
 	responseBody, err := json.Marshal(subject)
 	if err != nil {
 		log.Fatal(err)
 	}
-	w.Write(responseBody)
+	if isSuccess {
+		log.Printf("Success Register Subject:%s\n", subject.SubjectName)
+		w.Write(responseBody)
+	} else {
+		log.Printf("Error Register Subject:%s\n", subject.SubjectName)
+		w.WriteHeader(409)
+	}
 })
 
 var getAllSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

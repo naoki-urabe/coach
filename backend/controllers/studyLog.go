@@ -3,10 +3,12 @@ package controllers
 import (
 	"coach/models"
 	"encoding/json"
-	_ "fmt"
+	"fmt"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type User struct {
@@ -75,6 +77,16 @@ var getAllStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	w.Write(responseBody)
 })
 
+var deleteStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	vars := mux.Vars(r)
+	deleteId, _ := strconv.Atoi(vars["id"])
+	models.DeleteStudyLog(deleteId)
+	fmt.Fprintln(w, vars["id"])
+})
 var getSubjectStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {

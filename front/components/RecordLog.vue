@@ -43,7 +43,30 @@
     </v-container>
     <v-card>
       <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20" :options="pagination">
+	      <template v-slot:item.actions="{ item }">
+		<v-icon
+			small
+			@click="editItem(item)"
+		>
+		mdi-pencil
+		</v-icon>
+		<v-icon
+			small
+			@click="deleteItem(item)"
+		>
+		mdi-delete
+		</v-icon>
+	      </template>
       </v-data-table>
+		<v-dialog v-model="dialogDelete" max-width="500px">
+			<v-card>
+				<v-card-title class="justify-center">削除しますか?</v-card-title>
+				<v-card-actions class="justify-center">
+					<v-btn @click="deleteConfirm">はい</v-btn>
+					<v-btn @click="dialogDelete=false">いいえ</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
     </v-card>
   </div>
 </template>
@@ -53,6 +76,9 @@ import dayjs from "dayjs";
 export default {
   data() {
     return {
+      dialog: true,
+      dialogDelete: false,
+	  deleteId: null,
       subjectCode: "",
       subjects: [],
       comment: "",
@@ -67,6 +93,7 @@ export default {
         { text: "開始時刻", value: "start" },
         { text: "終了時刻", value: "end" },
         { text: "勉強時間", value: "time" },
+	{ text: "編集/削除", value: "actions"},
       ],
       studyLogs: [],
       username: "",
@@ -87,15 +114,29 @@ export default {
     }*/
   },
   methods: {
+    editItem: function(item) {
+    	console.log(item);
+    },
+    deleteItem: function(item) {
+		this.dialogDelete=true;
+		this.deleteId=item.id
+    },
+	deleteConfirm: async function() {	
+      const subjectStudyLogs = await this.$axios.post(
+        `/study-log/delete/${this.deleteId}`
+      )
+	  this.dialogDelete=false;
+	  await this.getAllStudyLogs();
+	},
     selectAll: function() {
     	this.subjectCode="";
     },
     createRecord: async function (token) {
       try {
 	      const bodyParameters = {
-		subject_code: this.subjectCode,
-		study_start_time: new Date(),
-		user: this.username
+			subject_code: this.subjectCode,
+			study_start_time: new Date(),
+			user: this.username
 	      };
 	      const response = await this.$axios.post(
 		"/study-log/start",
@@ -109,8 +150,8 @@ export default {
 	      return response;
       } catch(err) {
       	console.log(err);
-	this.isError=true;
-	this.errMsg="科目の値が不正です";
+		this.isError=true;
+		this.errMsg="科目の値が不正です";
       }
     },
     updateCurrentRecord: async function (token, currentId) {
@@ -246,7 +287,8 @@ export default {
       return allSubjects.data;
     },
     getAllStudyLogs: async function() {
-	    const response = await this.getAllStudyLogsFromApi();
+	    this.studyLogs = [];
+		const response = await this.getAllStudyLogsFromApi();
 	    this.setStudyLogs(response);
     }
   },

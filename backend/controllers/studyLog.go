@@ -23,6 +23,10 @@ var addStudyStartLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	if err := json.Unmarshal(reqBody, &startLog); err != nil {
 		log.Fatal(err)
 	}
+	if startLog.SubjectCode == "" {
+		w.WriteHeader(406)
+		return
+	}
 	id := models.AddStudyStartLog(&startLog)
 	startLog.Id = id
 	responseBody, err := json.Marshal(startLog)

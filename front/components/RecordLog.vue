@@ -4,14 +4,31 @@
     <v-container>
       <v-row>
         <v-col cols="4" v-if="!this.$store.state.studyLog.isStart">
-          <v-select
+	  <v-select
             v-model="subjectCode"
             :items="subjects"
             item-text="subject_name"
             item-value="subject_code"
             label="科目名"
             @change="getStudyLogs"
-          ></v-select>
+	    no-data-text="科目を登録してください"
+	    :menu-props="{
+		closeOnClick: true,
+		closeOnContentClick: true,
+	    }"
+	    :error="isError"
+	    :error-messages="errMsg"
+          >
+		  <template v-slot:prepend-item>
+			<v-list-item ripple @change="getAllStudyLogs" @click="subjectCode=''" value="">
+				<v-list-item-content>
+					<v-list-item-title>
+						SELECT ALL
+					</v-list-item-title>
+				</v-list-item-content>
+			</v-list-item>
+		  </template>
+	  </v-select>
         </v-col>
         <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
           <v-text-field v-model="content" label="内容"></v-text-field>
@@ -56,7 +73,9 @@ export default {
       pagination: {
         sortBy: ['date'],
         sortDesc: [true]
-      }
+      },
+      isError: false,
+      errMsg: ""
     };
   },
   computed: {
@@ -68,20 +87,31 @@ export default {
     }*/
   },
   methods: {
+    selectAll: function() {
+    	this.subjectCode="";
+    },
     createRecord: async function (token) {
-      const bodyParameters = {
-        subject_code: this.subjectCode,
-        study_start_time: new Date(),
-        user: this.username
-      };
-      const response = await this.$axios.post(
-        "/study-log/start",
-        bodyParameters,
-      );
-      this.$store.commit("studyLog/isStartStateChange");
-      this.$store.commit("studyLog/changeCurrentId", response.data.id);
-      this.subjectCode = "";
-      return response;
+      try {
+	      const bodyParameters = {
+		subject_code: this.subjectCode,
+		study_start_time: new Date(),
+		user: this.username
+	      };
+	      const response = await this.$axios.post(
+		"/study-log/start",
+		bodyParameters,
+	      );
+	      this.$store.commit("studyLog/isStartStateChange");
+	      this.$store.commit("studyLog/changeCurrentId", response.data.id);
+	      this.subjectCode = "";
+	      this.isError=false;
+	      this.errMsg="";
+	      return response;
+      } catch(err) {
+      	console.log(err);
+	this.isError=true;
+	this.errMsg="科目の値が不正です";
+      }
     },
     updateCurrentRecord: async function (token, currentId) {
       const bodyParameters = {
@@ -101,17 +131,21 @@ export default {
       return response;
     },
     recordTime: async function () {
-      let token = this.$auth.strategy.token.get();
-      const currentId = this.$store.getters["studyLog/getId"];
-      let response = null;
-      if (currentId === -1) {
-        response = await this.createRecord(token);
-        const latestStudyLog = response.data;
-        this.addLatestStudyLog(latestStudyLog);
-      } else {
-        response = await this.updateCurrentRecord(token, currentId);
-        const latestStudyLog = response.data;
-        this.updateLatestStudyLog(latestStudyLog);
+      try {
+	      let token = this.$auth.strategy.token.get();
+	      const currentId = this.$store.getters["studyLog/getId"];
+	      let response = null;
+	      if (currentId === -1) {
+			response = await this.createRecord(token);
+			const latestStudyLog = response.data;
+			this.addLatestStudyLog(latestStudyLog);
+	      } else {
+			response = await this.updateCurrentRecord(token, currentId);
+			const latestStudyLog = response.data;
+			this.updateLatestStudyLog(latestStudyLog);
+	      }
+      } catch(err) {
+      	console.log(err);
       }
     },
     addLatestStudyLog: async function (latestStudyLog) {
@@ -177,8 +211,7 @@ export default {
     getStudyLogs: async function() {
       this.studyLogs = []
       if(this.subjectCode == "") {
-        const response = await this.getAllStudyLogs();
-        this.setStudyLogs(response);
+        this.getAllStudyLogs();
       } else {
         const response = await this.getSubjectStudyLogs();
         this.setStudyLogs(response);
@@ -194,7 +227,7 @@ export default {
       }
       return subjectStudyLogs.data;
     },
-    getAllStudyLogs: async function () {
+    getAllStudyLogsFromApi: async function () {
       const allStudyLogs = await this.$axios.post(
         "/study-log/all",
         {user: this.username},
@@ -212,13 +245,16 @@ export default {
       }
       return allSubjects.data;
     },
+    getAllStudyLogs: async function() {
+	    const response = await this.getAllStudyLogsFromApi();
+	    this.setStudyLogs(response);
+    }
   },
   mounted: async function () {
     this.username = this.$auth.$storage.getLocalStorage("user");
     let token = this.$auth.strategy.token.get();
-    const response = await this.getAllStudyLogs();
     this.subjects = await this.getAllSubjects(token);
-    this.setStudyLogs(response);
+    this.getAllStudyLogs();
   },
 };
 </script>

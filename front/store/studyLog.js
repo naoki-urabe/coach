@@ -14,15 +14,15 @@ export const mutations = {
 
 export const getters = {
   getIsStart(state) {
-    return state.isStart
+    return state.isStart;
   },
   getId(state) {
-      return state.currentId
+    return state.currentId;
   }
-}
+};
 
 export default {
   state,
   mutations,
   getters,
-}
+};

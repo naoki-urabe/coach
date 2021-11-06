@@ -1,6 +1,6 @@
 <script>
 import { Bar } from "vue-chartjs";
-import dayjs from "dayjs"
+import dayjs from "dayjs";
 export default {
   extends: Bar,
   data() {
@@ -29,9 +29,15 @@ export default {
       username: ""
     };
   },
+  mounted: async function() {
+    this.username = this.$auth.$storage.getLocalStorage("user");
+    const response = await this.getDailyPeriodDiff();
+    this.setPeriodDiff(response);
+    this.renderChart(this.chartdata, this.options);
+  },
   methods: {
-    getDailyPeriodDiff: async function(token) {
-      const bodyParameters = { 'user': this.username };
+    getDailyPeriodDiff: async function() {
+      const bodyParameters = { "user": this.username };
       const dailyDiff = await this.$axios.post(
         "/study-log/aggregation/daily",
         bodyParameters
@@ -48,13 +54,6 @@ export default {
         );
       }
     }
-  },
-  mounted: async function() {
-    this.username = this.$auth.$storage.getLocalStorage("user");
-    const token = this.$auth.strategy.token.get();
-    const response = await this.getDailyPeriodDiff(token);
-    this.setPeriodDiff(response);
-    this.renderChart(this.chartdata, this.options);
   }
 };
 </script>

@@ -3,70 +3,174 @@
     <p>{{ username }}さんの学習記録</p>
     <v-container>
       <v-row>
-        <v-col cols="4" v-if="!this.$store.state.studyLog.isStart">
-	  <v-select
+        <v-col
+          v-if="!$store.state.studyLog.isStart"
+          cols="4"
+        >
+          <v-select
             v-model="subjectCode"
             :items="subjects"
             item-text="subject_name"
             item-value="subject_code"
             label="科目名"
+            no-data-text="科目を登録してください"
+            :menu-props="{
+              closeOnClick: true,
+              closeOnContentClick: true,
+            }"
+            :error="isError"
+            :error-messages="errMsg"
             @change="getStudyLogs"
-	    no-data-text="科目を登録してください"
-	    :menu-props="{
-		closeOnClick: true,
-		closeOnContentClick: true,
-	    }"
-	    :error="isError"
-	    :error-messages="errMsg"
           >
-		  <template v-slot:prepend-item>
-			<v-list-item ripple @change="getAllStudyLogs" @click="subjectCode=''" value="">
-				<v-list-item-content>
-					<v-list-item-title>
-						SELECT ALL
-					</v-list-item-title>
-				</v-list-item-content>
-			</v-list-item>
-		  </template>
-	  </v-select>
+            <template #prepend-item>
+              <v-list-item
+                ripple
+                value=""
+                @change="getAllStudyLogs"
+                @click="subjectCode=''"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>
+                    SELECT ALL
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-select>
         </v-col>
-        <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
-          <v-text-field v-model="content" label="内容"></v-text-field>
+        <v-col
+          v-if="$store.state.studyLog.isStart"
+          cols="4"
+        >
+          <v-text-field
+            v-model="content"
+            label="内容"
+          />
         </v-col>
-        <v-col cols="4" v-if="this.$store.state.studyLog.isStart">
-          <v-text-field v-model="comment" label="感想"></v-text-field>
+        <v-col
+          v-if="$store.state.studyLog.isStart"
+          cols="4"
+        >
+          <v-text-field
+            v-model="comment"
+            label="感想"
+          />
         </v-col>
         <v-col cols="4">
-          <v-btn @click="recordTime">submit</v-btn>
+          <v-btn @click="recordTime">
+            submit
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
     <v-card>
-      <v-data-table :headers="headers" :items="studyLogs" :items-per-page="20" :options="pagination">
-	      <template v-slot:item.actions="{ item }">
-		<v-icon
-			small
-			@click="editItem(item)"
-		>
-		mdi-pencil
-		</v-icon>
-		<v-icon
-			small
-			@click="deleteItem(item)"
-		>
-		mdi-delete
-		</v-icon>
-	      </template>
+      <v-data-table
+        :headers="headers"
+        :items="studyLogs"
+        :items-per-page="20"
+        :options="pagination"
+      >
+        <template #[`item.actions`]="{ item }">
+          <v-icon
+            small
+            @click="editItem(item)"
+          >
+            mdi-pencil
+          </v-icon>
+          <v-icon
+            small
+            @click="deleteItem(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
       </v-data-table>
-		<v-dialog v-model="dialogDelete" max-width="500px">
-			<v-card>
-				<v-card-title class="justify-center">削除しますか?</v-card-title>
-				<v-card-actions class="justify-center">
-					<v-btn @click="deleteConfirm">はい</v-btn>
-					<v-btn @click="dialogDelete=false">いいえ</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+      <v-dialog
+        v-model="dialogEdit"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title class="justify-center">
+            編集しますか?
+          </v-card-title>
+          <v-card-actions class="justify-center">
+            <v-container>
+              <v-row>
+                <v-select
+                  v-model="editStudyLog.subject_code"
+                  :items="subjects"
+                  item-text="subject_name"
+                  item-value="subject_code"
+                  label="科目名"
+                  no-data-text="科目を登録してください"
+                  :menu-props="{
+                    closeOnClick: true,
+                    closeOnContentClick: true,
+                  }"
+                  :error="isError"
+                  :error-messages="errMsg"
+                />
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editStudyLog.content"
+                    label="内容"
+                  />
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editStudyLog.comment"
+                    label="感想"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editStudyStartTime"
+                    label="開始時刻"
+                  />
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field
+                    v-model="editStudyFinishTime"
+                    label="終了時刻"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-btn @click="editConfirm">
+                    OK
+                  </v-btn>
+                  <v-btn @click="dialogEdit=false">
+                    キャンセル
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog
+        v-model="dialogDelete"
+        max-width="500px"
+      >
+        <v-card>
+          <v-card-title class="justify-center">
+            削除しますか?
+          </v-card-title>
+          <v-card-actions class="justify-center">
+            <v-btn @click="deleteConfirm">
+              はい
+            </v-btn>
+            <v-btn @click="dialogDelete=false">
+              いいえ
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </div>
 </template>
@@ -76,9 +180,13 @@ import dayjs from "dayjs";
 export default {
   data() {
     return {
-      dialog: true,
+      dialogEdit: false,
       dialogDelete: false,
-	  deleteId: null,
+      editId: null,
+      editStudyLog: {subject_code: "",content: "", comment:"", study_start_time: null,study_finish_time:null},
+      editStudyStartTime: null,
+      editStudyFinishTime: null,
+      deleteId: null,
       subjectCode: "",
       subjects: [],
       comment: "",
@@ -93,12 +201,12 @@ export default {
         { text: "開始時刻", value: "start" },
         { text: "終了時刻", value: "end" },
         { text: "勉強時間", value: "time" },
-	{ text: "編集/削除", value: "actions"},
+        { text: "編集/削除", value: "actions"},
       ],
       studyLogs: [],
       username: "",
       pagination: {
-        sortBy: ['date'],
+        sortBy: ["date"],
         sortDesc: [true]
       },
       isError: false,
@@ -110,51 +218,80 @@ export default {
       return this.$store.getters["studyLog/getId"];
     },
     /*getIsStart() {
-      return this.$store.getters["studyLog/getIsStart"];
-    }*/
+return this.$store.getters["studyLog/getIsStart"];
+}*/
+  },
+  mounted: async function () {
+    this.username = this.$auth.$storage.getLocalStorage("user");
+    this.subjects = await this.getAllSubjects();
+    this.getAllStudyLogs();
   },
   methods: {
-    editItem: function(item) {
-    	console.log(item);
+    editItem: async function(item) {
+      this.dialogEdit=true;
+      this.editId=item.id;
+      await this.getSpecificStudyLog();
+      console.log(this.editStudyLog);
+      this.editStudyStartTime=dayjs(this.editStudyLog.study_start_time).format("YYYY-MM-DD HH:mm");
+      this.editStudyFinishTime=dayjs(this.editStudyLog.study_finish_time).format("YYYY-MM-DD HH:mm");
     },
     deleteItem: function(item) {
-		this.dialogDelete=true;
-		this.deleteId=item.id
+      this.dialogDelete=true;
+      this.deleteId=item.id;
     },
-	deleteConfirm: async function() {	
-      const subjectStudyLogs = await this.$axios.post(
+    editConfirm: async function() {
+      console.log(dayjs(this.editStudyStartTime).toDate());
+      console.log(this.editStudyStartTime);
+      const bodyParameters = {
+        id: this.editStudyLog.id,
+        subject_code: this.editStudyLog.subject_code,
+        content: this.editStudyLog.content,
+        comment: this.editStudyLog.comment,
+        study_start_time: dayjs(this.editStudyStartTime).toDate(),
+        study_finish_time: dayjs(this.editStudyFinishTime).toDate(),
+        user: this.editStudyLog.user
+      };
+      await this.$axios.post(
+        `/study-log/edit/${this.editId}`,
+        bodyParameters,
+      );
+      this.dialogEdit = false;
+      this.getAllStudyLogs();
+    },
+    deleteConfirm: async function() {	
+      await this.$axios.post(
         `/study-log/delete/${this.deleteId}`
-      )
-	  this.dialogDelete=false;
-	  await this.getAllStudyLogs();
-	},
-    selectAll: function() {
-    	this.subjectCode="";
+      );
+      this.dialogDelete=false;
+      await this.getAllStudyLogs();
     },
-    createRecord: async function (token) {
+    selectAll: function() {
+      this.subjectCode="";
+    },
+    createRecord: async function () {
       try {
-	      const bodyParameters = {
-			subject_code: this.subjectCode,
-			study_start_time: new Date(),
-			user: this.username
-	      };
-	      const response = await this.$axios.post(
-		"/study-log/start",
-		bodyParameters,
-	      );
-	      this.$store.commit("studyLog/isStartStateChange");
-	      this.$store.commit("studyLog/changeCurrentId", response.data.id);
-	      this.subjectCode = "";
-	      this.isError=false;
-	      this.errMsg="";
-	      return response;
+        const bodyParameters = {
+          subject_code: this.subjectCode,
+          study_start_time: new Date(),
+          user: this.username
+        };
+        const response = await this.$axios.post(
+          "/study-log/start",
+          bodyParameters,
+        );
+        this.$store.commit("studyLog/isStartStateChange");
+        this.$store.commit("studyLog/changeCurrentId", response.data.id);
+        this.subjectCode = "";
+        this.isError=false;
+        this.errMsg="";
+        return response;
       } catch(err) {
-      	console.log(err);
-		this.isError=true;
-		this.errMsg="科目の値が不正です";
+        console.log(err);
+        this.isError=true;
+        this.errMsg="科目の値が不正です";
       }
     },
-    updateCurrentRecord: async function (token, currentId) {
+    updateCurrentRecord: async function (currentId) {
       const bodyParameters = {
         id: currentId,
         content: this.content,
@@ -173,20 +310,19 @@ export default {
     },
     recordTime: async function () {
       try {
-	      let token = this.$auth.strategy.token.get();
-	      const currentId = this.$store.getters["studyLog/getId"];
-	      let response = null;
-	      if (currentId === -1) {
-			response = await this.createRecord(token);
-			const latestStudyLog = response.data;
-			this.addLatestStudyLog(latestStudyLog);
-	      } else {
-			response = await this.updateCurrentRecord(token, currentId);
-			const latestStudyLog = response.data;
-			this.updateLatestStudyLog(latestStudyLog);
-	      }
+        const currentId = this.$store.getters["studyLog/getId"];
+        let response = null;
+        if (currentId === -1) {
+          response = await this.createRecord();
+          const latestStudyLog = response.data;
+          this.addLatestStudyLog(latestStudyLog);
+        } else {
+          response = await this.updateCurrentRecord(currentId);
+          const latestStudyLog = response.data;
+          this.updateLatestStudyLog(latestStudyLog);
+        }
       } catch(err) {
-      	console.log(err);
+        console.log(err);
       }
     },
     addLatestStudyLog: async function (latestStudyLog) {
@@ -250,7 +386,7 @@ export default {
       }
     },
     getStudyLogs: async function() {
-      this.studyLogs = []
+      this.studyLogs = [];
       if(this.subjectCode == "") {
         this.getAllStudyLogs();
       } else {
@@ -262,9 +398,9 @@ export default {
       const subjectStudyLogs = await this.$axios.post(
         "/study-log/subject",
         {user: this.username,subjectCode: this.subjectCode},
-      )
+      );
       if (subjectStudyLogs === null) {
-        return []
+        return [];
       }
       return subjectStudyLogs.data;
     },
@@ -278,7 +414,7 @@ export default {
       }
       return allStudyLogs.data;
     },
-    getAllSubjects: async function (token) {
+    getAllSubjects: async function () {
       const allSubjects = await this.$axios.get("/subject", {
       });
       if (allSubjects.data === null) {
@@ -287,16 +423,16 @@ export default {
       return allSubjects.data;
     },
     getAllStudyLogs: async function() {
-	    this.studyLogs = [];
-		const response = await this.getAllStudyLogsFromApi();
-	    this.setStudyLogs(response);
+      this.studyLogs = [];
+      const response = await this.getAllStudyLogsFromApi();
+      this.setStudyLogs(response);
+    },
+    getSpecificStudyLog: async function() {
+      console.log(this.editId);
+      const response = await this.$axios.post(`/study-log/${this.editId}`);
+      console.log(response.data);
+      this.editStudyLog = response.data;
     }
-  },
-  mounted: async function () {
-    this.username = this.$auth.$storage.getLocalStorage("user");
-    let token = this.$auth.strategy.token.get();
-    this.subjects = await this.getAllSubjects(token);
-    this.getAllStudyLogs();
   },
 };
 </script>

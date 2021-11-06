@@ -19,18 +19,24 @@ export default {
         responsive: true, 
         maintainAspectRatio: false,
         scales: {
-            yAxes: [{
-              ticks: {
-                beginAtZero: true
-              }
-            }]
-          } 
-        },
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        } 
+      },
       username: ""
     };
   },
+  mounted: async function () {
+    this.username = this.$auth.$storage.getLocalStorage("user");
+    const response = await this.getWeeklyPeriodDiff();
+    this.setPeriodDiff(response);
+    this.renderChart(this.chartdata, this.options);
+  },
   methods: {
-    getWeeklyPeriodDiff: async function (token) {
+    getWeeklyPeriodDiff: async function () {
       const weeklyDiff = await this.$axios.post(
         "/study-log/aggregation/weekly",
         { user: this.username },
@@ -47,13 +53,6 @@ export default {
         );
       }
     },
-  },
-  mounted: async function () {
-    const token = this.$auth.strategy.token.get();
-    this.username = this.$auth.$storage.getLocalStorage("user");
-    const response = await this.getWeeklyPeriodDiff(token);
-    this.setPeriodDiff(response);
-    this.renderChart(this.chartdata, this.options);
   },
 };
 </script>

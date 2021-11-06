@@ -24,7 +24,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: ['~/plugins/axios.js',{src: '~/plugins/persistedState.client.js'}],
+  plugins: ["~/plugins/axios.js",{src: "~/plugins/persistedState.client.js"}],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -51,7 +51,7 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: '/auth/login',
+            url: "/auth/login",
             method: "post",
             propertyName: "token"
           },
@@ -93,7 +93,7 @@ export default {
   },
   privateRuntimeConfig: {},
   server: {
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     port: process.env.NUXT_ENV_FRONT_PORT
   }
 };

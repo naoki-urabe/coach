@@ -1,7 +1,9 @@
 <template>
   <div>
-  <h1>{{ subjectName }}</h1>
-  <button @click="kuji">くじびき</button>
+    <h1>{{ subjectName }}</h1>
+    <button @click="kuji">
+      くじびき
+    </button>
   </div>
 </template>
 
@@ -14,8 +16,8 @@ export default {
   },
   methods: {
     kuji: async function () {
-      let subjectName = ""
-      let token = this.$auth.strategy.token.get()
+      let subjectName = "";
+      let token = this.$auth.strategy.token.get();
       await this.$axios
         .get("/subject/random", {
           headers: {
@@ -25,7 +27,7 @@ export default {
         .then(function (response) {
           subjectName = response.data.subject_name;
         });
-      this.subjectName = subjectName
+      this.subjectName = subjectName;
     },
   },
 };

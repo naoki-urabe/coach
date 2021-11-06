@@ -77,6 +77,22 @@ var getAllStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	w.Write(responseBody)
 })
 
+var updateStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	vars := mux.Vars(r)
+	var studyLog models.StudyLog
+	reqBody, _ := ioutil.ReadAll(r.Body)
+	if err := json.Unmarshal(reqBody, &studyLog); err != nil {
+		log.Fatal(err)
+	}
+	updateId, _ := strconv.Atoi(vars["id"])
+	models.UpdateStudyLog(&studyLog, updateId)
+	fmt.Fprintln(w, vars["id"])
+})
+
 var deleteStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {
@@ -87,6 +103,23 @@ var deleteStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	models.DeleteStudyLog(deleteId)
 	fmt.Fprintln(w, vars["id"])
 })
+
+var getSpecificStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	vars := mux.Vars(r)
+	specificId, _ := strconv.Atoi(vars["id"])
+	var studyLog models.StudyLog
+	models.GetSpecificStudyLog(&studyLog, specificId)
+	responseBody, err := json.Marshal(studyLog)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})
+
 var getSubjectStudyLog = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	if (*r).Method == "OPTIONS" {

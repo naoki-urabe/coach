@@ -52,6 +52,14 @@ var deleteStudyLogQuery = `
 DELETE FROM study_logs WHERE id = ?;
 `
 
+var getSpecificStudyLogQuery = `
+SELECT * FROM study_logs WHERE id = ?;
+`
+
+var updateStudyLogQuery = `
+UPDATE study_logs SET subject_code = ?, content = ?, comment = ?,study_start_time = ?, study_finish_time = ? WHERE id = ?
+`
+
 type StudyLog struct {
 	Id              int        `db:"id" json:"id"`
 	SubjectCode     string     `db:"subject_code" json:"subject_code"`
@@ -91,10 +99,17 @@ func AddStudyFinishLog(finishLog *FinishLog) {
 	Db.MustExec(addStudyFinishLogQuery, finishLog.Content, finishLog.Comment, finishLog.StudyFinishTime, finishLog.Id)
 }
 
+func UpdateStudyLog(studyLog *StudyLog, updateId int) {
+	_, err := Db.Queryx(updateStudyLogQuery, studyLog.SubjectCode, studyLog.Content, studyLog.Comment, studyLog.StudyStartTime, studyLog.StudyFinishTime, updateId)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func DeleteStudyLog(deleteId int) {
 	_, err := Db.Queryx(deleteStudyLogQuery, deleteId)
-	if err != err {
-		log.Println(err)
+	if err != nil {
+		log.Printf("DeleteStudyLog:%s\n", err)
 	}
 }
 
@@ -103,7 +118,17 @@ func GetAllStudyLog(user string, studyLog *[]StudyLog) {
 }
 
 func GetSubjectStudyLog(user string, subjectCode string, studyLog *[]StudyLog) {
-	Db.Select(studyLog, getSubjectStudyLogQuery, user, subjectCode)
+	err := Db.Select(studyLog, getSubjectStudyLogQuery, user, subjectCode)
+	if err != nil {
+		log.Printf("GetSubjectStudyLog:%s\n", err)
+	}
+}
+
+func GetSpecificStudyLog(studyLog *StudyLog, id int) {
+	err := Db.Get(studyLog, getSpecificStudyLogQuery, id)
+	if err != nil {
+		log.Printf("GetSpecificStudyLog:%s\n", err)
+	}
 }
 
 func GetLatestStudyLog(studyLog *StudyLog, id int) {

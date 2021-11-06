@@ -43,7 +43,7 @@ export default {
   methods: {
     register: async function () {
       try {
-	      const response = await this.$axios({
+        const response = await this.$axios({
           method: "post",
           url: "/auth/register",
           data: {
@@ -60,7 +60,7 @@ export default {
         this.id="";
         this.password="";
         this.isSuccessRegister="error";
-      	console.log(error);
+        console.log(error);
       }
     },
   },

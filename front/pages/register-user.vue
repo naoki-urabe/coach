@@ -32,37 +32,37 @@
 </template>
 <script>
 export default {
-    auth: "guest",
-    data() {
-        return {
-            id: "",
-            password: "",
-            isSuccessRegister: "",
-        };
-    },
-    methods: {
-        register: async function () {
-            try {
+  auth: "guest",
+  data() {
+    return {
+      id: "",
+      password: "",
+      isSuccessRegister: "",
+    };
+  },
+  methods: {
+    register: async function () {
+      try {
 	      const response = await this.$axios({
-                    method: "post",
-                    url: "/auth/register",
-                    data: {
-                        id: this.id,
-                        pw: this.password,
-                    },
-                });
-                if(response.status === 200){
-                    this.isSuccessRegister="success";
-                    this.id="";
-                    this.password="";
-                }
-            } catch (error) {
-                this.id="";
-                this.password="";
-                this.isSuccessRegister="error";
+          method: "post",
+          url: "/auth/register",
+          data: {
+            id: this.id,
+            pw: this.password,
+          },
+        });
+        if(response.status === 200){
+          this.isSuccessRegister="success";
+          this.id="";
+          this.password="";
+        }
+      } catch (error) {
+        this.id="";
+        this.password="";
+        this.isSuccessRegister="error";
       	console.log(error);
-            }
-        },
+      }
     },
+  },
 };
 </script>

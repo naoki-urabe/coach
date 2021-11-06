@@ -23,34 +23,34 @@
 </template>
 <script>
 export default {
-    data() {
-        return {
-            subjectCode: "",
-            subjectName: "",
-            isRegister: "",
-        };
-    },
-    methods: {
-        registerSubject: async function () {
-            try {
+  data() {
+    return {
+      subjectCode: "",
+      subjectName: "",
+      isRegister: "",
+    };
+  },
+  methods: {
+    registerSubject: async function () {
+      try {
 	  let token = this.$auth.strategy.token.get();
 	  const headers = {
-                    Authorization: token,
+          Authorization: token,
 	  };
 	  const bodyParameters = {
-                    subject_code: this.subjectCode,
-                    subject_name: this.subjectName,
+          subject_code: this.subjectCode,
+          subject_name: this.subjectName,
 	  };
 	  await this.$axios.post("/subject", bodyParameters, );
 	  this.isRegister="success";
 	  this.subjectCode = "";
 	  this.subjectName = "";
 	  } catch(e) {
-                this.isRegister="error";
-                this.subjectCode = "";
-                this.subjectName = "";
+        this.isRegister="error";
+        this.subjectCode = "";
+        this.subjectName = "";
 	  }
-        },
     },
+  },
 };
 </script>

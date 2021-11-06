@@ -178,261 +178,261 @@
 <script>
 import dayjs from "dayjs";
 export default {
-    data() {
-        return {
-            dialogEdit: false,
-            dialogDelete: false,
-            editId: null,
-            editStudyLog: {subject_code: "",content: "", comment:"", study_start_time: null,study_finish_time:null},
-            editStudyStartTime: null,
-            editStudyFinishTime: null,
-            deleteId: null,
-            subjectCode: "",
-            subjects: [],
-            comment: "",
-            content: "",
-            startTime: null,
-            finishTime: null,
-            headers: [
-                { text: "日付", value: "date"},
-                { text: "科目名", value: "subject" },
-                { text: "内容", value: "content" },
-                { text: "感想", value: "comment" },
-                { text: "開始時刻", value: "start" },
-                { text: "終了時刻", value: "end" },
-                { text: "勉強時間", value: "time" },
-                { text: "編集/削除", value: "actions"},
-            ],
-            studyLogs: [],
-            username: "",
-            pagination: {
-                sortBy: ["date"],
-                sortDesc: [true]
-            },
-            isError: false,
-            errMsg: ""
-        };
+  data() {
+    return {
+      dialogEdit: false,
+      dialogDelete: false,
+      editId: null,
+      editStudyLog: {subject_code: "",content: "", comment:"", study_start_time: null,study_finish_time:null},
+      editStudyStartTime: null,
+      editStudyFinishTime: null,
+      deleteId: null,
+      subjectCode: "",
+      subjects: [],
+      comment: "",
+      content: "",
+      startTime: null,
+      finishTime: null,
+      headers: [
+        { text: "日付", value: "date"},
+        { text: "科目名", value: "subject" },
+        { text: "内容", value: "content" },
+        { text: "感想", value: "comment" },
+        { text: "開始時刻", value: "start" },
+        { text: "終了時刻", value: "end" },
+        { text: "勉強時間", value: "time" },
+        { text: "編集/削除", value: "actions"},
+      ],
+      studyLogs: [],
+      username: "",
+      pagination: {
+        sortBy: ["date"],
+        sortDesc: [true]
+      },
+      isError: false,
+      errMsg: ""
+    };
+  },
+  computed: {
+    getId() {
+      return this.$store.getters["studyLog/getId"];
     },
-    computed: {
-        getId() {
-            return this.$store.getters["studyLog/getId"];
-        },
-        /*getIsStart() {
+    /*getIsStart() {
 return this.$store.getters["studyLog/getIsStart"];
 }*/
+  },
+  mounted: async function () {
+    this.username = this.$auth.$storage.getLocalStorage("user");
+    this.subjects = await this.getAllSubjects();
+    this.getAllStudyLogs();
+  },
+  methods: {
+    editItem: async function(item) {
+      this.dialogEdit=true;
+      this.editId=item.id;
+      await this.getSpecificStudyLog();
+      console.log(this.editStudyLog);
+      this.editStudyStartTime=dayjs(this.editStudyLog.study_start_time).format("YYYY-MM-DD HH:mm");
+      this.editStudyFinishTime=dayjs(this.editStudyLog.study_finish_time).format("YYYY-MM-DD HH:mm");
     },
-    mounted: async function () {
-        this.username = this.$auth.$storage.getLocalStorage("user");
-        this.subjects = await this.getAllSubjects();
-        this.getAllStudyLogs();
+    deleteItem: function(item) {
+      this.dialogDelete=true;
+      this.deleteId=item.id;
     },
-    methods: {
-        editItem: async function(item) {
-            this.dialogEdit=true;
-            this.editId=item.id;
-            await this.getSpecificStudyLog();
-            console.log(this.editStudyLog);
-            this.editStudyStartTime=dayjs(this.editStudyLog.study_start_time).format("YYYY-MM-DD HH:mm");
-            this.editStudyFinishTime=dayjs(this.editStudyLog.study_finish_time).format("YYYY-MM-DD HH:mm");
-        },
-        deleteItem: function(item) {
-            this.dialogDelete=true;
-            this.deleteId=item.id;
-        },
-        editConfirm: async function() {
-            console.log(dayjs(this.editStudyStartTime).toDate());
-            console.log(this.editStudyStartTime);
-            const bodyParameters = {
-                id: this.editStudyLog.id,
-                subject_code: this.editStudyLog.subject_code,
-                content: this.editStudyLog.content,
-                comment: this.editStudyLog.comment,
-                study_start_time: dayjs(this.editStudyStartTime).toDate(),
-                study_finish_time: dayjs(this.editStudyFinishTime).toDate(),
-                user: this.editStudyLog.user
-            };
-            await this.$axios.post(
-                `/study-log/edit/${this.editId}`,
-                bodyParameters,
-            );
-            this.dialogEdit = false;
-            this.getAllStudyLogs();
-        },
-        deleteConfirm: async function() {	
-            await this.$axios.post(
-                `/study-log/delete/${this.deleteId}`
-            );
-            this.dialogDelete=false;
-            await this.getAllStudyLogs();
-        },
-        selectAll: function() {
-            this.subjectCode="";
-        },
-        createRecord: async function () {
-            try {
-                const bodyParameters = {
-                    subject_code: this.subjectCode,
-                    study_start_time: new Date(),
-                    user: this.username
-                };
-                const response = await this.$axios.post(
-                    "/study-log/start",
-                    bodyParameters,
-                );
-                this.$store.commit("studyLog/isStartStateChange");
-                this.$store.commit("studyLog/changeCurrentId", response.data.id);
-                this.subjectCode = "";
-                this.isError=false;
-                this.errMsg="";
-                return response;
-            } catch(err) {
-                console.log(err);
-                this.isError=true;
-                this.errMsg="科目の値が不正です";
-            }
-        },
-        updateCurrentRecord: async function (currentId) {
-            const bodyParameters = {
-                id: currentId,
-                content: this.content,
-                comment: this.comment,
-                study_finish_time: new Date(),
-            };
-            const response = await this.$axios.post(
-                "/study-log/finish",
-                bodyParameters,
-            );
-            this.$store.commit("studyLog/isStartStateChange");
-            this.$store.commit("studyLog/changeCurrentId", response.data.id);
-            this.content = "";
-            this.comment = "";
-            return response;
-        },
-        recordTime: async function () {
-            try {
-                const currentId = this.$store.getters["studyLog/getId"];
-                let response = null;
-                if (currentId === -1) {
-                    response = await this.createRecord();
-                    const latestStudyLog = response.data;
-                    this.addLatestStudyLog(latestStudyLog);
-                } else {
-                    response = await this.updateCurrentRecord(currentId);
-                    const latestStudyLog = response.data;
-                    this.updateLatestStudyLog(latestStudyLog);
-                }
-            } catch(err) {
-                console.log(err);
-            }
-        },
-        addLatestStudyLog: async function (latestStudyLog) {
-            this.studyLogs.push({
-                id: latestStudyLog.id,
-                date: dayjs(latestStudyLog.study_start_time).format("YYYY-MM-DD"),
-                subject: latestStudyLog.subject_code,
-                content: null,
-                comment: null,
-                start: dayjs(latestStudyLog.study_start_time).format("HH:mm"),
-                end: null,
-                time: null,
-            });
-        },
-        findIdx: function (latestStudyLog) {
-            const id = latestStudyLog.id;
-            for (let i = 0; i < this.studyLogs.length; i++) {
-                if (id === this.studyLogs[i].id) {
-                    return i;
-                }
-            }
-        },
-        updateLatestStudyLog: function (latestStudyLog) {
-            const idx = this.findIdx(latestStudyLog);
-            this.$set(
-                this.studyLogs[idx],
-                "content",
-                latestStudyLog.content
-            );
-            this.$set(
-                this.studyLogs[idx],
-                "comment",
-                latestStudyLog.comment
-            );
-            this.$set(
-                this.studyLogs[idx],
-                "end",
-                dayjs(latestStudyLog.study_finish_time).format("HH:mm")
-            );
-            const end = dayjs(latestStudyLog.study_finish_time);
-            const start = dayjs(latestStudyLog.study_start_time);
-            const time = parseInt(end.diff(start) / 1000 / 60, 10);
-            this.$set(this.studyLogs[idx], "time", time);
-        },
-        setStudyLogs: async function (studyLogs) {
-            for (let i = 0; i < studyLogs.length; i++) {
-                let log = studyLogs[i];
-                const end = dayjs(log.study_finish_time);
-                const start = dayjs(log.study_start_time);
-                const time = parseInt(end.diff(start) / 1000 / 60, 10);
-                this.studyLogs.push({
-                    id: log.id,
-                    date: dayjs(log.study_start_time).format("YYYY-MM-DD"),
-                    subject: log.subject_code,
-                    content: log.content,
-                    comment: log.comment,
-                    start: dayjs(log.study_start_time).format("HH:mm"),
-                    end: dayjs(log.study_finish_time).format("HH:mm"),
-                    time: time,
-                });
-            }
-        },
-        getStudyLogs: async function() {
-            this.studyLogs = [];
-            if(this.subjectCode == "") {
-                this.getAllStudyLogs();
-            } else {
-                const response = await this.getSubjectStudyLogs();
-                this.setStudyLogs(response);
-            }
-        },
-        getSubjectStudyLogs: async function() {
-            const subjectStudyLogs = await this.$axios.post(
-                "/study-log/subject",
-                {user: this.username,subjectCode: this.subjectCode},
-            );
-            if (subjectStudyLogs === null) {
-                return [];
-            }
-            return subjectStudyLogs.data;
-        },
-        getAllStudyLogsFromApi: async function () {
-            const allStudyLogs = await this.$axios.post(
-                "/study-log/all",
-                {user: this.username},
-            );
-            if (allStudyLogs.data === null) {
-                return [];
-            }
-            return allStudyLogs.data;
-        },
-        getAllSubjects: async function () {
-            const allSubjects = await this.$axios.get("/subject", {
-            });
-            if (allSubjects.data === null) {
-                return [];
-            }
-            return allSubjects.data;
-        },
-        getAllStudyLogs: async function() {
-            this.studyLogs = [];
-            const response = await this.getAllStudyLogsFromApi();
-            this.setStudyLogs(response);
-        },
-        getSpecificStudyLog: async function() {
-            console.log(this.editId);
-            const response = await this.$axios.post(`/study-log/${this.editId}`);
-            console.log(response.data);
-            this.editStudyLog = response.data;
+    editConfirm: async function() {
+      console.log(dayjs(this.editStudyStartTime).toDate());
+      console.log(this.editStudyStartTime);
+      const bodyParameters = {
+        id: this.editStudyLog.id,
+        subject_code: this.editStudyLog.subject_code,
+        content: this.editStudyLog.content,
+        comment: this.editStudyLog.comment,
+        study_start_time: dayjs(this.editStudyStartTime).toDate(),
+        study_finish_time: dayjs(this.editStudyFinishTime).toDate(),
+        user: this.editStudyLog.user
+      };
+      await this.$axios.post(
+        `/study-log/edit/${this.editId}`,
+        bodyParameters,
+      );
+      this.dialogEdit = false;
+      this.getAllStudyLogs();
+    },
+    deleteConfirm: async function() {	
+      await this.$axios.post(
+        `/study-log/delete/${this.deleteId}`
+      );
+      this.dialogDelete=false;
+      await this.getAllStudyLogs();
+    },
+    selectAll: function() {
+      this.subjectCode="";
+    },
+    createRecord: async function () {
+      try {
+        const bodyParameters = {
+          subject_code: this.subjectCode,
+          study_start_time: new Date(),
+          user: this.username
+        };
+        const response = await this.$axios.post(
+          "/study-log/start",
+          bodyParameters,
+        );
+        this.$store.commit("studyLog/isStartStateChange");
+        this.$store.commit("studyLog/changeCurrentId", response.data.id);
+        this.subjectCode = "";
+        this.isError=false;
+        this.errMsg="";
+        return response;
+      } catch(err) {
+        console.log(err);
+        this.isError=true;
+        this.errMsg="科目の値が不正です";
+      }
+    },
+    updateCurrentRecord: async function (currentId) {
+      const bodyParameters = {
+        id: currentId,
+        content: this.content,
+        comment: this.comment,
+        study_finish_time: new Date(),
+      };
+      const response = await this.$axios.post(
+        "/study-log/finish",
+        bodyParameters,
+      );
+      this.$store.commit("studyLog/isStartStateChange");
+      this.$store.commit("studyLog/changeCurrentId", response.data.id);
+      this.content = "";
+      this.comment = "";
+      return response;
+    },
+    recordTime: async function () {
+      try {
+        const currentId = this.$store.getters["studyLog/getId"];
+        let response = null;
+        if (currentId === -1) {
+          response = await this.createRecord();
+          const latestStudyLog = response.data;
+          this.addLatestStudyLog(latestStudyLog);
+        } else {
+          response = await this.updateCurrentRecord(currentId);
+          const latestStudyLog = response.data;
+          this.updateLatestStudyLog(latestStudyLog);
         }
+      } catch(err) {
+        console.log(err);
+      }
     },
+    addLatestStudyLog: async function (latestStudyLog) {
+      this.studyLogs.push({
+        id: latestStudyLog.id,
+        date: dayjs(latestStudyLog.study_start_time).format("YYYY-MM-DD"),
+        subject: latestStudyLog.subject_code,
+        content: null,
+        comment: null,
+        start: dayjs(latestStudyLog.study_start_time).format("HH:mm"),
+        end: null,
+        time: null,
+      });
+    },
+    findIdx: function (latestStudyLog) {
+      const id = latestStudyLog.id;
+      for (let i = 0; i < this.studyLogs.length; i++) {
+        if (id === this.studyLogs[i].id) {
+          return i;
+        }
+      }
+    },
+    updateLatestStudyLog: function (latestStudyLog) {
+      const idx = this.findIdx(latestStudyLog);
+      this.$set(
+        this.studyLogs[idx],
+        "content",
+        latestStudyLog.content
+      );
+      this.$set(
+        this.studyLogs[idx],
+        "comment",
+        latestStudyLog.comment
+      );
+      this.$set(
+        this.studyLogs[idx],
+        "end",
+        dayjs(latestStudyLog.study_finish_time).format("HH:mm")
+      );
+      const end = dayjs(latestStudyLog.study_finish_time);
+      const start = dayjs(latestStudyLog.study_start_time);
+      const time = parseInt(end.diff(start) / 1000 / 60, 10);
+      this.$set(this.studyLogs[idx], "time", time);
+    },
+    setStudyLogs: async function (studyLogs) {
+      for (let i = 0; i < studyLogs.length; i++) {
+        let log = studyLogs[i];
+        const end = dayjs(log.study_finish_time);
+        const start = dayjs(log.study_start_time);
+        const time = parseInt(end.diff(start) / 1000 / 60, 10);
+        this.studyLogs.push({
+          id: log.id,
+          date: dayjs(log.study_start_time).format("YYYY-MM-DD"),
+          subject: log.subject_code,
+          content: log.content,
+          comment: log.comment,
+          start: dayjs(log.study_start_time).format("HH:mm"),
+          end: dayjs(log.study_finish_time).format("HH:mm"),
+          time: time,
+        });
+      }
+    },
+    getStudyLogs: async function() {
+      this.studyLogs = [];
+      if(this.subjectCode == "") {
+        this.getAllStudyLogs();
+      } else {
+        const response = await this.getSubjectStudyLogs();
+        this.setStudyLogs(response);
+      }
+    },
+    getSubjectStudyLogs: async function() {
+      const subjectStudyLogs = await this.$axios.post(
+        "/study-log/subject",
+        {user: this.username,subjectCode: this.subjectCode},
+      );
+      if (subjectStudyLogs === null) {
+        return [];
+      }
+      return subjectStudyLogs.data;
+    },
+    getAllStudyLogsFromApi: async function () {
+      const allStudyLogs = await this.$axios.post(
+        "/study-log/all",
+        {user: this.username},
+      );
+      if (allStudyLogs.data === null) {
+        return [];
+      }
+      return allStudyLogs.data;
+    },
+    getAllSubjects: async function () {
+      const allSubjects = await this.$axios.get("/subject", {
+      });
+      if (allSubjects.data === null) {
+        return [];
+      }
+      return allSubjects.data;
+    },
+    getAllStudyLogs: async function() {
+      this.studyLogs = [];
+      const response = await this.getAllStudyLogsFromApi();
+      this.setStudyLogs(response);
+    },
+    getSpecificStudyLog: async function() {
+      console.log(this.editId);
+      const response = await this.$axios.post(`/study-log/${this.editId}`);
+      console.log(response.data);
+      this.editStudyLog = response.data;
+    }
+  },
 };
 </script>

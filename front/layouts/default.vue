@@ -27,10 +27,10 @@
 
 <script>
 export default {
-    data () {
-        return {
-            title: "Coach"
-        };
-    }
+  data () {
+    return {
+      title: "Coach"
+    };
+  }
 };
 </script>

@@ -139,7 +139,6 @@ export default {
   methods: {
     editItem: async function(item) {
       this.dialogEdit=true;
-      console.log(item);
       this.editId=item.subjectCode;
       this.editSubject = (await this.$axios.get(`/subject/${this.editId}`)).data;
       this.editSubjectCode = this.editSubject.subject_code;

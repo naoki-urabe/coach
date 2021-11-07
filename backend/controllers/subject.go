@@ -3,12 +3,12 @@ package controllers
 import (
 	"coach/models"
 	"encoding/json"
+	"fmt"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	mrand "math/rand"
 	"net/http"
-    "fmt"
-    "github.com/gorilla/mux"
 )
 
 var addSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -56,41 +56,41 @@ var getSpecificSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	if (*r).Method == "OPTIONS" {
 		return
 	}
-    var subject models.Subject
-    vars := mux.Vars(r)
-    specificSubject := vars["subject"]
-    models.GetSpecificSubject(&subject, specificSubject)
-    responseBody, err := json.Marshal(subject)
-    if err != nil {
-        log.Fatal(err)
-    }
-    w.Write(responseBody)
+	var subject models.Subject
+	vars := mux.Vars(r)
+	specificSubject := vars["subject"]
+	models.GetSpecificSubject(&subject, specificSubject)
+	responseBody, err := json.Marshal(subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
 })
 var updateSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
-    if (*r).Method == "OPTIONS" {
-        return
-    }
-    vars := mux.Vars(r)
-    updateSubject := vars["subject"]
-    reqBody, _ := ioutil.ReadAll(r.Body)
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	vars := mux.Vars(r)
+	updateSubject := vars["subject"]
+	reqBody, _ := ioutil.ReadAll(r.Body)
 	var subject models.Subject
 	if err := json.Unmarshal(reqBody, &subject); err != nil {
 		log.Fatal(err)
 	}
-    models.UpdateSubject(&subject, updateSubject)
-    fmt.Fprintln(w, updateSubject)
+	models.UpdateSubject(&subject, updateSubject)
+	fmt.Fprintln(w, updateSubject)
 })
 
 var deleteSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
-    if (*r).Method == "OPTIONS" {
-        return
-    }
-    vars := mux.Vars(r)
-    deleteSubject := vars["subject"]
-    models.DeleteSubject(deleteSubject)
-    fmt.Fprintln(w, deleteSubject)
+	enableCors(&w)
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+	vars := mux.Vars(r)
+	deleteSubject := vars["subject"]
+	models.DeleteSubject(deleteSubject)
+	fmt.Fprintln(w, deleteSubject)
 })
 var getRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)

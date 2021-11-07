@@ -28,11 +28,11 @@ DELETE FROM subjects WHERE subject_code = ?;
 `
 
 func GetAllSubject(subject *[]Subject) {
-    Db.Select(subject, getAllSubjectQuery)
+	Db.Select(subject, getAllSubjectQuery)
 }
 
 func GetSpecificSubject(subject *Subject, subjectCode string) {
-    Db.Get(subject, getSpecificSubjectQuery, subjectCode)
+	Db.Get(subject, getSpecificSubjectQuery, subjectCode)
 }
 
 func InsertSubject(subject *Subject) bool {
@@ -45,14 +45,14 @@ func InsertSubject(subject *Subject) bool {
 }
 
 func UpdateSubject(subject *Subject, subjectCode string) {
-    _, err := Db.Queryx(updateSubjectQuery, subject.SubjectCode, subject.SubjectName,subjectCode)
-    if err != nil {
-        log.Println(err)
-    }
+	_, err := Db.Queryx(updateSubjectQuery, subject.SubjectCode, subject.SubjectName, subjectCode)
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func DeleteSubject(subject string) {
-    _, err := Db.Queryx(deleteSubjectQuery, subject)
+	_, err := Db.Queryx(deleteSubjectQuery, subject)
 	if err != nil {
 		log.Println(err)
 	}

@@ -231,7 +231,6 @@ return this.$store.getters["studyLog/getIsStart"];
       this.dialogEdit=true;
       this.editId=item.id;
       await this.getSpecificStudyLog();
-      console.log(this.editStudyLog);
       this.editStudyStartTime=dayjs(this.editStudyLog.study_start_time).format("YYYY-MM-DD HH:mm");
       this.editStudyFinishTime=dayjs(this.editStudyLog.study_finish_time).format("YYYY-MM-DD HH:mm");
     },

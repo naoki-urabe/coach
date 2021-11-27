@@ -1,6 +1,6 @@
 .cache/
 backend/db/mysql_data/
-.env.dev
+.env
 .env.dev.api
 .env.dev.front
 .env.dev.db

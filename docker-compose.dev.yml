@@ -8,15 +8,15 @@ services:
     volumes:
       - .:/app
     ports:
-      - 59822:59822
-      - 55824:55824
+      - $API_PORT:$API_PORT
+      - $NUXT_ENV_FRONT_PORT:$NUXT_ENV_FRONT_PORT
     stdin_open: true
-    env_file: .env.dev
+    env_file: .env
   coach_db_dev:
     image: mysql:8.0.26
     restart: always
     ports:
-      - 50284:50284
+        - $DB_PORT:$DB_PORT
     volumes:
       - ./backend/db/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./backend/db/mysql_data:/var/lib/mysql

@@ -1,6 +1,8 @@
 <script>
 import { Bar } from "vue-chartjs";
 import dayjs from "dayjs";
+import ja from "dayjs/locale/ja"
+dayjs.locale("ja")
 export default {
   extends: Bar,
   data() {
@@ -46,7 +48,7 @@ export default {
     },
     setPeriodDiff: async function(dailyPeriodDiff) {
       for (let i = 0; i < dailyPeriodDiff.length; i++) {
-        this.chartdata["labels"].splice(i, 0, dayjs(dailyPeriodDiff[i]["period"]).format("YYYY-MM-DD"));
+        this.chartdata["labels"].splice(i, 0, dayjs(dailyPeriodDiff[i]["period"]).format("YYYY-MM-DD(ddd)"));
         this.chartdata["datasets"][0]["data"].splice(
           i,
           0,

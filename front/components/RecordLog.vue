@@ -177,6 +177,8 @@
 
 <script>
 import dayjs from "dayjs";
+import ja from "dayjs/locale/ja";
+dayjs.locale(ja);
 export default {
   data() {
     return {
@@ -327,7 +329,7 @@ return this.$store.getters["studyLog/getIsStart"];
     addLatestStudyLog: async function (latestStudyLog) {
       this.studyLogs.push({
         id: latestStudyLog.id,
-        date: dayjs(latestStudyLog.study_start_time).format("YYYY-MM-DD"),
+        date: dayjs(latestStudyLog.study_start_time).format("YYYY-MM-DD(ddd)"),
         subject: latestStudyLog.subject_code,
         content: null,
         comment: null,
@@ -374,7 +376,7 @@ return this.$store.getters["studyLog/getIsStart"];
         const time = parseInt(end.diff(start) / 1000 / 60, 10);
         this.studyLogs.push({
           id: log.id,
-          date: dayjs(log.study_start_time).format("YYYY-MM-DD"),
+          date: dayjs(log.study_start_time).format("YYYY-MM-DD(ddd)"),
           subject: log.subject_code,
           content: log.content,
           comment: log.comment,

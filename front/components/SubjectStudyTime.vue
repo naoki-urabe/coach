@@ -11,6 +11,7 @@ export default {
         datasets: [
           {
             label: ["勉強時間"],
+            backgroundColor: "#4169e1",
             data: []
           },
         ]

@@ -60,6 +60,10 @@ var updateStudyLogQuery = `
 UPDATE study_logs SET subject_code = ?, content = ?, comment = ?,study_start_time = ?, study_finish_time = ? WHERE id = ?
 `
 
+var getAggregationSubjectStudyTimeQuery = `
+SELECT SUM(CAST((TIME_TO_SEC(TIMEDIFF(study_finish_time,study_start_time)) / 60) AS SIGNED) ) AS aggregation_subject_study_time,subject_code FROM study_logs GROUP BY subject_code;
+`
+
 type StudyLog struct {
 	Id              int        `db:"id" json:"id"`
 	SubjectCode     string     `db:"subject_code" json:"subject_code"`
@@ -87,6 +91,11 @@ type FinishLog struct {
 type PeriodDiff struct {
 	Period string `db:"period" json:"period"`
 	Diff   string `db:"diff" json:"diff"`
+}
+
+type AggregationSubjectStudyTime struct {
+	SubjectCode                 string `db:"subject_code" json:"subject_code"`
+	AggregationSubjectStudyTime string `db:"aggregation_subject_study_time" json: "aggregation_subject_study_time"`
 }
 
 func AddStudyStartLog(startLog *StartLog) int {
@@ -141,4 +150,10 @@ func GetDailyStudyInvestment(user string, periodDiff *[]PeriodDiff) {
 
 func GetWeeklyStudyInvestment(user string, periodDiff *[]PeriodDiff) {
 	Db.Select(periodDiff, getWeeklyStudyInvestmentQuery, user)
+}
+func GetAggregationSubjectStudyTime(aggSubjectStudyTime *[]AggregationSubjectStudyTime) {
+	err := Db.Select(aggSubjectStudyTime, getAggregationSubjectStudyTimeQuery)
+	if err != nil {
+		log.Printf("GetAggregationSubjectStudyTime:%s\n", err)
+	}
 }

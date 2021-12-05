@@ -40,6 +40,7 @@ export default {
     this.subjects = await this.getAllSubjects();
     this.setChartDataLabels();
     await this.setAggregationSubjectStudyTime();
+    console.log(this.chartdata.datasets[0].data);
     this.renderChart(this.chartdata, this.options);
   },
   methods: {

@@ -23,7 +23,14 @@ export default {
             ticks: {
               beginAtZero: true
             }
-          }]
+          }],
+          xAxes:[{
+            ticks: {
+              maxRotation: 90,
+              minRotation: 90
+            }
+          }
+          ]
         } 
       },
       username: ""

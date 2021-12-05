@@ -1,5 +1,8 @@
 <template>
   <div>
+    <WeeklyStudyInvestment />
+    <DailyStudyInvestment />
+    <SubjectStudyTime />
     <p>{{ username }}さんの学習記録</p>
     <v-container>
       <v-row>
@@ -178,8 +181,15 @@
 <script>
 import dayjs from "dayjs";
 import ja from "dayjs/locale/ja";
+import RecordLog from "@/components/RecordLog";
+import DailyStudyInvestment from "@/components/DailyStudyInvestment.vue";
+import WeeklyStudyInvestment from "@/components/WeeklyStudyInvestment.vue";
+import SubjectStudyTime from "@/components/SubjectStudyTime.vue";
+import Mixin from "../mixins/mixin.js";
 dayjs.locale(ja);
 export default {
+  components: { DailyStudyInvestment, WeeklyStudyInvestment },
+  mixins: [ Mixin ],
   data() {
     return {
       dialogEdit: false,
@@ -414,14 +424,6 @@ return this.$store.getters["studyLog/getIsStart"];
         return [];
       }
       return allStudyLogs.data;
-    },
-    getAllSubjects: async function () {
-      const allSubjects = await this.$axios.get("/subject", {
-      });
-      if (allSubjects.data === null) {
-        return [];
-      }
-      return allSubjects.data;
     },
     getAllStudyLogs: async function() {
       this.studyLogs = [];

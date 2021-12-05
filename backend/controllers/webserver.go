@@ -29,6 +29,7 @@ func StartWebServer() error {
 	studyLogRouter.HandleFunc("/{id}", getSpecificStudyLog)
 	studyLogRouter.HandleFunc("/aggregation/daily", getDailyStudyInvestment)
 	studyLogRouter.HandleFunc("/aggregation/weekly", getWeeklyStudyInvestment)
+	studyLogRouter.HandleFunc("/aggregation/subject", getAggregationSubjectStudyTime)
 	studyLogRouter.Use(validateJWTMiddleware)
 	router.HandleFunc("/api/auth/register", registerUser).Methods("POST", "OPTIONS")
 	// router.HandleFunc("/api/auth/user", GetTokenHandler).Methods("GET", "OPTIONS")

@@ -179,3 +179,12 @@ var getWeeklyStudyInvestment = http.HandlerFunc(func(w http.ResponseWriter, r *h
 	}
 	w.Write(responseBody)
 })
+var getAggregationSubjectStudyTime = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	var aggregationSubjectStudyTime []models.AggregationSubjectStudyTime
+	models.GetAggregationSubjectStudyTime(&aggregationSubjectStudyTime)
+	responseBody, err := json.Marshal(aggregationSubjectStudyTime)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})

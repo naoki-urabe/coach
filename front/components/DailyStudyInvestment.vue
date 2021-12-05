@@ -1,8 +1,8 @@
 <script>
 import { Bar } from "vue-chartjs";
 import dayjs from "dayjs";
-import ja from "dayjs/locale/ja"
-dayjs.locale("ja")
+import ja from "dayjs/locale/ja";
+dayjs.locale("ja");
 export default {
   extends: Bar,
   data() {
@@ -12,7 +12,7 @@ export default {
         datasets: [
           {
             label: ["日別学習投資量"],
-            backgroundColor: "#4169e1",
+            backgroundColor: "#4170e1",
             data: []
           }
         ]

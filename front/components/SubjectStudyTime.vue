@@ -56,10 +56,16 @@ export default {
       console.log(aggSubjectStudyTime);
       for(let i=0;i<this.chartdata.labels.length;i++){
         const label = this.chartdata.labels[i];
+        let isExists = true;
         for(let j=0;j<aggSubjectStudyTime.length;j++){
           if(label === aggSubjectStudyTime[j].subject_code){
             tmp.push(parseInt(aggSubjectStudyTime[j].AggregationSubjectStudyTime));
+            isExists = false;
+            break;
           }
+        }
+        if(isExists) {
+            tmp.push(0);
         }
       }
       this.chartdata.datasets[0].data = tmp;

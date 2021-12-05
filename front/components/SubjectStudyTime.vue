@@ -61,7 +61,6 @@ export default {
           if(label === aggSubjectStudyTime[j].subject_code){
             tmp.push(parseInt(aggSubjectStudyTime[j].AggregationSubjectStudyTime));
             isExists = false;
-            break;
           }
         }
         if(isExists) {

@@ -68,6 +68,7 @@ export default {
         }
       }
       this.chartdata.datasets[0].data = tmp;
+      this.chartdata.datasets[0].data.splice();
     },
     getAggregationSubjectStudyTime: async function() {
       const response = await this.$axios.get("/study-log/aggregation/subject");

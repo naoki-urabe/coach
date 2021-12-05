@@ -40,7 +40,6 @@ export default {
     this.subjects = await this.getAllSubjects();
     this.setChartDataLabels();
     await this.setAggregationSubjectStudyTime();
-    console.log(this.chartdata.datasets[0].data);
     this.renderChart(this.chartdata, this.options);
   },
   methods: {
@@ -54,14 +53,14 @@ export default {
     setAggregationSubjectStudyTime: async function(){
       const tmp = [];
       const aggSubjectStudyTime = await this.getAggregationSubjectStudyTime();
-      console.log(aggSubjectStudyTime);
-      for(let i=0;i<this.chartdata.labels.length;i++){
-        const label = this.chartdata.labels[i];
+      for(let i=0;i<this.subjects.length;i++){
+        const label = this.subjects[i].subject_code;
         let isExists = true;
         for(let j=0;j<aggSubjectStudyTime.length;j++){
           if(label === aggSubjectStudyTime[j].subject_code){
             tmp.push(parseInt(aggSubjectStudyTime[j].AggregationSubjectStudyTime));
             isExists = false;
+            break;
           }
         }
         if(isExists) {

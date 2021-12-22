@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "API_PORT=${{ secrets.API_PORT }}" >> .env
           echo "NUXT_ENV_FRONT_PORT=${{ secrets.FRONT_PORT }}" >> .env
-          echo "DB_PORT=${{ secrets.MYSQL_TCP_PORT }" >> .env
+          echo "DB_PORT=${{ secrets.MYSQL_TCP_PORT }}" >> .env
       - name: Log in to Github packages
         run: echo ${GITHUB_TOKEN} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
         env:

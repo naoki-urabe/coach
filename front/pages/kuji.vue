@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>{{ subjectName }}</h1>
-    <button @click="kuji">
+    <v-btn @click="kuji">
       くじびき
-    </button>
+    </v-btn>
   </div>
 </template>
 

@@ -12,6 +12,9 @@
       <v-btn href="/register-subject">
         科目登録
       </v-btn>
+      <v-btn href="/kuji">
+        くじ
+      </v-btn>
       <v-spacer />
       <v-btn @click="$auth.logout()">
         logout

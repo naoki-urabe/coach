@@ -54,6 +54,9 @@ export default {
       return dailyDiff.data;
     },
     setPeriodDiff: async function(dailyPeriodDiff) {
+      if(dailyPeriodDiff == null) {
+         return;
+      }
       for (let i = 0; i < dailyPeriodDiff.length; i++) {
         this.chartdata["labels"].splice(i, 0, dayjs(dailyPeriodDiff[i]["period"]).format("YYYY-MM-DD(ddd)"));
         this.chartdata["datasets"][0]["data"].splice(

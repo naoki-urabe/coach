@@ -51,6 +51,9 @@ export default {
       return weeklyDiff.data;
     },
     setPeriodDiff: async function (weeklyPeriodDiff) {
+      if(weeklyPeriodDiff == null) {
+        return;
+      }
       for (let i = 0; i < weeklyPeriodDiff.length; i++) {
         this.chartdata["labels"].splice(i, 0, dayjs(weeklyPeriodDiff[i]["period"]).format("YYYY-MM-DD"));
         this.chartdata["datasets"][0]["data"].splice(

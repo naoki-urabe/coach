@@ -54,9 +54,15 @@ export default {
     setAggregationSubjectStudyTime: async function(){
       const tmp = [];
       const aggSubjectStudyTime = await this.getAggregationSubjectStudyTime();
+      if(this.subjects == null) {
+        return;
+      }
       for(let i=0;i<this.subjects.length;i++){
         const label = this.subjects[i].subject_code;
         let isExists = true;
+        if(aggSubjectStudyTime == null){
+          return;
+        }
         for(let j=0;j<aggSubjectStudyTime.length;j++){
           if(label === aggSubjectStudyTime[j].subject_code){
             tmp.push(parseInt(aggSubjectStudyTime[j].AggregationSubjectStudyTime));

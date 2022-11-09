@@ -63,6 +63,9 @@
           <v-btn @click="recordTime">
             submit
           </v-btn>
+          <v-btn @click="kuji">
+            kuji
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -335,6 +338,23 @@ return this.$store.getters["studyLog/getIsStart"];
       } catch(err) {
         console.log(err);
       }
+    },
+    kuji: async function () {
+      let subjectName = "";
+      let subjectCode = "";
+      let token = this.$auth.strategy.token.get();
+      await this.$axios
+        .get("/subject/random", {
+          headers: {
+            Authorization: token,
+          }
+        })
+        .then(function (response) {
+          subjectName = response.data.subject_name;
+          subjectCode = response.data.subject_code;
+        });
+      this.subjectName = subjectName;
+      this.subjectCode = subjectCode;
     },
     addLatestStudyLog: async function (latestStudyLog) {
       this.studyLogs.push({

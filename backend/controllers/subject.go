@@ -105,3 +105,13 @@ var getRandomSubject = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	}
 	w.Write(responseBody)
 })
+var getSubjectKuji = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	var subject models.Subject
+	models.GetSubjectKuji(&subject)
+	responseBody, err := json.Marshal(subject)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})

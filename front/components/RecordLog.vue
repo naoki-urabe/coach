@@ -344,7 +344,7 @@ return this.$store.getters["studyLog/getIsStart"];
       let subjectCode = "";
       let token = this.$auth.strategy.token.get();
       await this.$axios
-        .get("/subject/random", {
+        .get("/subject/kuji", {
           headers: {
             Authorization: token,
           }

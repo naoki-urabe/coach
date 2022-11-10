@@ -2,11 +2,17 @@ package models
 
 import (
 	"log"
+	mrand "math/rand"
 )
 
 type Subject struct {
 	SubjectCode string `db:"subject_code" json:"subject_code"`
 	SubjectName string `db:"subject_name" json:"subject_name"`
+}
+
+type Kuji struct {
+	SubjectCode string `db:"subject_code" json:"subject_code"`
+	Selected    bool   `db:"selected" json:"selected"`
 }
 
 var getAllSubjectQuery = `
@@ -15,6 +21,18 @@ SELECT * FROM subjects;
 
 var getSpecificSubjectQuery = `
 SELECT * FROM subjects WHERE subject_code = ?;
+`
+
+var getSubjectKujiQuery = `
+SELECT * FROM kuji;
+`
+
+var updateKujiQuery = `
+UPDATE kuji SET selected = 1 WHERE subject_code = ?;
+`
+
+var updateKujiReset = `
+UPDATE kuji SET selected = 0;
 `
 
 var insertSubjectQuery = `
@@ -56,4 +74,24 @@ func DeleteSubject(subject string) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func GetSubjectKuji(subject *Subject) {
+	var kuji []Kuji
+	Db.Select(&kuji, getSubjectKujiQuery)
+	n := len(kuji)
+	if n == 0 {
+		_, err := Db.Queryx(updateKujiReset)
+		Db.Select(&kuji, getSubjectKujiQuery)
+		n = len(kuji)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	i := mrand.Intn(n)
+	_, err := Db.Queryx(updateKujiQuery, kuji[i].SubjectCode)
+	if err != nil {
+		log.Println(err)
+	}
+	Db.Get(subject, getSpecificSubjectQuery, kuji[i].SubjectCode)
 }

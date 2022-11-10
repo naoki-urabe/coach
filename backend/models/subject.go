@@ -24,7 +24,7 @@ SELECT * FROM subjects WHERE subject_code = ?;
 `
 
 var getSubjectKujiQuery = `
-SELECT * FROM kuji;
+SELECT * FROM kuji WHERE selected = 0;
 `
 
 var updateKujiQuery = `

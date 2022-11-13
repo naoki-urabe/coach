@@ -1,0 +1,1 @@
+ALTER TABLE kuji DROP COLUMN target;

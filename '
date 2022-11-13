@@ -102,5 +102,6 @@ func GetSubjectKuji(subject *Subject) {
 }
 
 func GetKujiAll(kuji *[]Kuji) {
-	Db.Select(kuji, getKujiAllQuery)
+	Db.Select(&kuji, getKujiAllQuery)
+	fmt.Println(kuji)
 }

@@ -115,3 +115,14 @@ var getSubjectKuji = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	}
 	w.Write(responseBody)
 })
+
+var getKujiAll = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	var kujis []models.Kuji
+	models.GetKujiAll(&kujis)
+	responseBody, err := json.Marshal(kujis)
+	if err != nil {
+		log.Fatal(err)
+	}
+	w.Write(responseBody)
+})

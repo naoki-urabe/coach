@@ -17,6 +17,7 @@ func StartWebServer() error {
 	subjectRouter.HandleFunc("/delete/{subject}", deleteSubject).Methods("POST", "OPTIONS")
 	subjectRouter.HandleFunc("/edit/{subject}", updateSubject).Methods("POST", "OPTIONS")
 	subjectRouter.HandleFunc("/random", getRandomSubject).Methods("GET", "OPTIONS")
+	subjectRouter.HandleFunc("/kuji/all", getKujiAll).Methods("GET", "OPTIONS")
 	subjectRouter.HandleFunc("/kuji", getSubjectKuji).Methods("GET", "OPTIONS")
 	subjectRouter.HandleFunc("/{subject}", getSpecificSubject).Methods("GET", "OPTIONS")
 	subjectRouter.Use(validateJWTMiddleware)

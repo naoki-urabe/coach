@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: build image
         run: |
-          docker-compose -f docker-compose.ci.yml build
+          docker-compose -f ci.yml build
       - name: push image
         run: |
           docker push ${{ env.API_IMAGE }}

@@ -66,6 +66,9 @@
           <v-btn @click="kuji">
             kuji
           </v-btn>
+          <v-btn @click="random">
+            random
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -353,6 +356,16 @@ return this.$store.getters["studyLog/getIsStart"];
           subjectName = response.data.subject_name;
           subjectCode = response.data.subject_code;
         });
+      this.subjectName = subjectName;
+      this.subjectCode = subjectCode;
+    },
+    random: async function () {
+      let subjectName = "";
+      let subjectCode = "";
+      await this.$axios.get("/subject/random").then(function(response) {
+        subjectName = response.data.subject_name;
+        subjectCode = response.data.subject_code;
+      })
       this.subjectName = subjectName;
       this.subjectCode = subjectCode;
     },
